@@ -1,0 +1,38 @@
+<view class="page">
+  <view wx:if="{{loading}}" class="panel section">
+    <view class="subtitle">正在加载活动详情...</view>
+  </view>
+  <view wx:if="{{errorMessage}}" class="panel section">
+    <view class="subtitle status-danger">{{errorMessage}}</view>
+  </view>
+
+  <view wx:if="{{campaign}}">
+    <view class="hero section">
+      <view class="eyebrow">活动详情</view>
+      <view class="title large">{{campaign.title}}</view>
+      <view class="subtitle">{{campaign.timeText}} · {{campaign.statusText}}</view>
+      <view class="grid" style="margin-top: 30rpx;">
+        <view>
+          <view class="subtitle">已报名</view>
+          <view class="metric light">{{campaign.registeredCount}}</view>
+        </view>
+        <view>
+          <view class="subtitle">剩余</view>
+          <view class="metric light">{{campaign.leftCount}}</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="panel section">
+      <view class="title">活动规则</view>
+      <view class="subtitle">{{campaign.rule}}</view>
+    </view>
+
+    <view class="panel section">
+      <view class="title">报名说明</view>
+      <view class="subtitle">限额活动可能需要员工确认；报名成功后请按活动时间到店。</view>
+    </view>
+
+    <view class="button secondary" bindtap="goRegister">报名</view>
+  </view>
+</view>

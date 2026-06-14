@@ -1,0 +1,31 @@
+<view class="page">
+  <view class="page-header">
+    <view class="eyebrow">桌台网格</view>
+    <view class="title large">一眼看懂当前桌况</view>
+    <view class="subtitle">空闲可预约，使用中和维修中需要员工维护状态。</view>
+  </view>
+
+  <view wx:if="{{loading}}" class="panel section">
+    <view class="subtitle">正在加载桌台状态...</view>
+  </view>
+  <view wx:if="{{errorMessage}}" class="panel section">
+    <view class="subtitle status-danger">{{errorMessage}}</view>
+  </view>
+
+  <view class="grid">
+    <block wx:for="{{tables}}" wx:key="id">
+      <view class="card">
+        <view class="row">
+          <view class="title">{{item.code}}</view>
+          <view class="tag">{{item.status}}</view>
+        </view>
+        <view class="subtitle">{{item.area}} · {{item.type}}</view>
+      </view>
+    </block>
+  </view>
+
+  <view wx:if="{{!loading && !tables.length}}" class="panel empty">
+    <view class="title">暂无桌台</view>
+    <view class="subtitle">完成桌台配置后，这里会展示实时状态。</view>
+  </view>
+</view>

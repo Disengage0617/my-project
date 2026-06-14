@@ -1,0 +1,60 @@
+<view class="page">
+  <view class="hero section">
+    <view class="eyebrow">今日可约</view>
+    <view class="title large">{{overview.store.name || "星火台球俱乐部"}}</view>
+    <view class="subtitle">{{overview.store.businessHours || "24小时营业"}} · {{overview.store.tableCount || 0}} 张桌台 · 到店后员工核实开台</view>
+    <view class="grid section" style="margin-top: 30rpx;">
+      <view>
+        <view class="subtitle">当前空桌</view>
+        <view class="metric light">{{overview.freeTableCount || 0}}</view>
+      </view>
+      <view>
+        <view class="subtitle">空闲助教</view>
+        <view class="metric light">{{overview.freeAssistantCount || 0}}</view>
+      </view>
+    </view>
+    <view class="button secondary" bindtap="goReservation">立即预约桌台</view>
+  </view>
+
+  <view wx:if="{{errorMessage}}" class="section panel flat">
+    <view class="subtitle status-danger">{{errorMessage}}</view>
+  </view>
+
+  <view class="grid section">
+    <view class="card" bindtap="goPrice">
+      <view class="tag gold">价格</view>
+      <view class="title">分区时段价</view>
+      <view class="subtitle">普台、银腿、独牙、金腿</view>
+    </view>
+    <view class="card" bindtap="goAssistants">
+      <view class="tag">助教</view>
+      <view class="title">陪练服务</view>
+      <view class="subtitle">查看状态与价格</view>
+    </view>
+  </view>
+
+  <view class="panel section">
+    <view class="row">
+      <view>
+        <view class="title">门店活动</view>
+        <view class="subtitle">新手交流、会员练习和限额活动</view>
+      </view>
+      <view class="tag" bindtap="goCampaigns">查看</view>
+    </view>
+    <block wx:for="{{overview.campaigns}}" wx:key="id">
+      <view class="divider"></view>
+      <view class="row">
+        <view>
+          <view>{{item.title}}</view>
+          <view class="subtitle">名额 {{item.registeredCount || item.registered_count || 0}} / {{item.quota || "不限"}}</view>
+        </view>
+        <view class="tag muted">{{item.statusText || item.status || "进行中"}}</view>
+      </view>
+    </block>
+  </view>
+
+  <view class="panel flat section">
+    <view class="title">预约规则</view>
+    <view class="subtitle">最早提前 {{overview.store.reservationLeadMinutes || 30}} 分钟预约；未到店限制 {{overview.store.noShowLockDays || 3}} 天。一期不收定金，到店后由员工核实开台。</view>
+  </view>
+</view>

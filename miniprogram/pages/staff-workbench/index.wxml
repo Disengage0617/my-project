@@ -1,0 +1,51 @@
+<view class="page">
+  <view class="page-header">
+    <view class="eyebrow">员工工作台</view>
+    <view class="title large">今天的预约和开台</view>
+    <view class="subtitle">先核实到店，再开台；结束后关台释放桌台。</view>
+  </view>
+
+  <view wx:if="{{loading}}" class="panel section">
+    <view class="subtitle">正在加载工作台...</view>
+  </view>
+  <view wx:if="{{errorMessage}}" class="panel section">
+    <view class="subtitle status-danger">{{errorMessage}}</view>
+  </view>
+
+  <view class="grid section">
+    <view class="hero" bindtap="goArrivalReview">
+      <view class="subtitle">待核实</view>
+      <view class="metric light">{{waitingReviewCount}}</view>
+      <view class="subtitle">用户已提交到店</view>
+    </view>
+    <view class="panel" bindtap="goTableGrid">
+      <view class="tag gold">桌台</view>
+      <view class="title">网格状态</view>
+      <view class="subtitle">空闲、预约、使用中</view>
+    </view>
+  </view>
+
+  <view class="row section">
+    <view class="title">今日预约</view>
+    <view class="tag muted">{{todayReservations.length}} 单</view>
+  </view>
+
+  <view class="stack">
+    <block wx:for="{{todayReservations}}" wx:key="id">
+      <view class="panel" data-id="{{item.id}}" bindtap="goArrivalReview">
+        <view class="row start">
+          <view>
+            <view class="title">{{item.userName}}</view>
+            <view class="subtitle">{{item.tableCode}} · {{item.startTime}}-{{item.endTime}} {{item.assistantText}}</view>
+          </view>
+          <view class="tag">{{item.status}}</view>
+        </view>
+      </view>
+    </block>
+  </view>
+
+  <view wx:if="{{!loading && !todayReservations.length}}" class="panel empty">
+    <view class="title">暂无今日预约</view>
+    <view class="subtitle">用户提交预约后，会在这里进入核实和开台流程。</view>
+  </view>
+</view>

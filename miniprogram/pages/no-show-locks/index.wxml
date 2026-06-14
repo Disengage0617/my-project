@@ -1,0 +1,9 @@
+<view class="page">
+  <view class="section">
+    <view class="title">爽约限制管理</view>
+    <view class="subtitle">员工标记未到后限制 3 天，店长可解除并记录原因</view>
+  </view>
+  <view class="card section">
+    <view class="subtitle">暂无限制记录</view>
+  </view>
+</view>

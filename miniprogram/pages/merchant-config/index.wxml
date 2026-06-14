@@ -1,0 +1,14 @@
+<view class="page">
+  <view class="section">
+    <view class="title">商家配置</view>
+    <view class="subtitle">小程序内简化后台配置入口</view>
+  </view>
+  <block wx:for="{{entries}}" wx:key="*this">
+    <view class="card section">
+      <view class="row">
+        <view>{{item}}</view>
+        <view class="tag">P0</view>
+      </view>
+    </view>
+  </block>
+</view>

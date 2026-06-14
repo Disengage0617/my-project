@@ -1,0 +1,104 @@
+<view class="page safe-bottom">
+  <view class="page-header">
+    <view class="eyebrow">桌台预约</view>
+    <view class="title large">选好时段，到店即开</view>
+    <view class="subtitle">服务端会校验桌台、助教和爽约限制，避免重复预约。</view>
+  </view>
+
+  <view class="panel section">
+    <view class="row">
+      <view>
+        <view class="title">预约条件</view>
+        <view class="subtitle">{{startTime}} 开始 · {{durationHours}} 小时 · {{peopleCount}} 人</view>
+      </view>
+      <view class="tag gold">提前30分钟</view>
+    </view>
+    <view class="divider"></view>
+    <view class="grid">
+      <view class="row panel flat">
+        <view>时长</view>
+        <view class="row">
+          <view class="tag muted" data-delta="-1" bindtap="changeDuration">-</view>
+          <view class="tag">{{durationHours}}小时</view>
+          <view class="tag muted" data-delta="1" bindtap="changeDuration">+</view>
+        </view>
+      </view>
+      <view class="row panel flat">
+        <view>人数</view>
+        <view class="row">
+          <view class="tag muted" data-delta="-1" bindtap="changePeople">-</view>
+          <view class="tag">{{peopleCount}}人</view>
+          <view class="tag muted" data-delta="1" bindtap="changePeople">+</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{loading}}" class="section panel">
+    <view class="subtitle">正在加载可预约资源...</view>
+  </view>
+  <view wx:if="{{errorMessage}}" class="section panel">
+    <view class="subtitle status-danger">{{errorMessage}}</view>
+  </view>
+
+  <view class="section">
+    <view class="row section">
+      <view class="title">选择桌台</view>
+      <view class="tag muted">{{tables.length}} 张</view>
+    </view>
+    <view class="grid">
+      <block wx:for="{{tables}}" wx:key="id">
+        <view
+          class="card selectable-card {{selectedTableId === item.id ? 'selected-card' : ''}}"
+          data-id="{{item.id}}"
+          bindtap="selectTable"
+        >
+          <view class="row">
+            <view class="option-title">{{item.code}}</view>
+            <view class="tag {{selectedTableId === item.id ? 'selected-tag' : ''}}">
+              {{selectedTableId === item.id ? "已选" : item.status}}
+            </view>
+          </view>
+          <view class="subtitle">{{item.area}} · {{item.type}}</view>
+          <view class="subtitle">{{item.price}} 元/小时</view>
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <view class="section">
+    <view class="row section">
+      <view class="title">助教需求</view>
+      <view class="tag muted">可不选</view>
+    </view>
+    <view class="stack">
+      <block wx:for="{{assistants}}" wx:key="id">
+        <view
+          class="card selectable-card {{selectedAssistantId === item.id ? 'selected-card' : ''}}"
+          data-id="{{item.id}}"
+          bindtap="selectAssistant"
+        >
+          <view class="row">
+            <view class="option-title">{{item.name}}</view>
+            <view class="tag {{selectedAssistantId === item.id ? 'selected-tag' : ''}}">
+              {{selectedAssistantId === item.id ? "已选" : item.status}}
+            </view>
+          </view>
+          <view class="subtitle">{{item.tagsText}} · {{item.price}} 元/小时</view>
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <view class="panel section" bindtap="toggleRule">
+    <view class="row start">
+      <view>
+        <view class="title">预约规则</view>
+        <view class="subtitle">不收定金；到店后点击“我已到店”，员工核实后开台。</view>
+      </view>
+      <view class="tag {{ruleConfirmed ? '' : 'muted'}}">{{ruleConfirmed ? "已确认" : "未确认"}}</view>
+    </view>
+  </view>
+
+  <view class="button secondary" bindtap="submitReservation">{{submiting ? "提交中..." : "提交预约"}}</view>
+</view>

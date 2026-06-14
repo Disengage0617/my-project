@@ -1,0 +1,31 @@
+<view class="page">
+  <view class="page-header">
+    <view class="eyebrow">价格规则</view>
+    <view class="title large">{{store.name}}</view>
+    <view class="subtitle">分时段价格以门店实际配置为准，一期不收线上定金。</view>
+  </view>
+
+  <view class="panel section">
+    <view class="row">
+      <view>
+        <view class="title">助教服务</view>
+        <view class="subtitle">入门陪练、进阶训练、比赛陪练</view>
+      </view>
+      <view class="tag gold">{{assistantPrice}} 元/小时</view>
+    </view>
+  </view>
+
+  <view class="stack">
+    <block wx:for="{{tableGroups}}" wx:key="type">
+      <view class="panel">
+        <view class="row start">
+          <view>
+            <view class="title">{{item.area}} · {{item.type}}</view>
+            <view class="subtitle">分时价格：{{item.price}} 元/小时</view>
+          </view>
+          <view class="tag">{{item.count}} 张</view>
+        </view>
+      </view>
+    </block>
+  </view>
+</view>

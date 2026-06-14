@@ -1,0 +1,36 @@
+<view class="page">
+  <view class="page-header">
+    <view class="eyebrow">到店核实</view>
+    <view class="title large">确认人到，再开台</view>
+    <view class="subtitle">核实身份后推进状态；未到店会触发爽约限制。</view>
+  </view>
+
+  <view wx:if="{{loading}}" class="panel section">
+    <view class="subtitle">正在刷新预约...</view>
+  </view>
+
+  <view class="panel section">
+    <view class="row start">
+      <view>
+        <view class="title">{{reservation.userName || "暂无待核实预约"}}</view>
+        <view wx:if="{{reservation}}" class="subtitle">{{reservation.tableCode}} · {{reservation.tableType}} · {{reservation.startTime}}-{{reservation.endTime}}</view>
+        <view wx:if="{{reservation}}" class="subtitle">助教：{{reservation.assistantText || "未选择"}}</view>
+      </view>
+      <view class="tag">{{reservation.status || "无"}}</view>
+    </view>
+    <view wx:if="{{actionStatus}}" class="divider"></view>
+    <view wx:if="{{actionStatus}}" class="subtitle {{actionError ? 'status-danger' : ''}}">{{actionStatus}}</view>
+  </view>
+
+  <view wx:if="{{reservation}}" class="panel section">
+    <view class="title">状态流转</view>
+    <view class="subtitle">待到店 -> 待核实 -> 已到店 -> 进行中 -> 已完成</view>
+  </view>
+
+  <view wx:if="{{reservation}}" class="stack">
+    <view class="button" bindtap="confirmArrival">{{actioning === "confirmArrival" ? "确认中..." : "确认到店"}}</view>
+    <view class="button secondary" bindtap="openTable">{{actioning === "openTable" ? "开台中..." : "开台"}}</view>
+    <view class="button ghost" bindtap="closeTable">{{actioning === "closeTable" ? "关台中..." : "关台"}}</view>
+    <view class="button danger" bindtap="markNoShow">{{actioning === "markNoShow" ? "标记中..." : "标记未到"}}</view>
+  </view>
+</view>

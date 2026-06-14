@@ -1,0 +1,8 @@
+node_modules/
+miniprogram_npm/
+dist/
+.tmp_cloud_download/
+.tmp_cloud_download_root/
+.DS_Store
+.env
+*.log

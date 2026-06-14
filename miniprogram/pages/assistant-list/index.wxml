@@ -1,0 +1,38 @@
+<view class="page">
+  <view class="page-header">
+    <view class="eyebrow">助教服务</view>
+    <view class="title large">选一位合适的陪练</view>
+    <view class="subtitle">可随桌台预约，也可单独提交助教需求，最终由员工确认。</view>
+  </view>
+
+  <view wx:if="{{loading}}" class="panel section">
+    <view class="subtitle">正在加载助教...</view>
+  </view>
+  <view wx:if="{{errorMessage}}" class="panel section">
+    <view class="subtitle status-danger">{{errorMessage}}</view>
+  </view>
+
+  <view class="stack">
+    <block wx:for="{{assistants}}" wx:key="id">
+      <view class="panel" data-id="{{item.id}}" bindtap="goBooking">
+        <view class="row start">
+          <view>
+            <view class="title">{{item.name}}</view>
+            <view class="subtitle">{{item.tagsText}}</view>
+          </view>
+          <view class="tag">{{item.status}}</view>
+        </view>
+        <view class="divider"></view>
+        <view class="row">
+          <view class="subtitle">{{item.intro}}</view>
+          <view class="tag gold">{{item.price}} 元/小时</view>
+        </view>
+      </view>
+    </block>
+  </view>
+
+  <view wx:if="{{!loading && !assistants.length}}" class="panel empty">
+    <view class="title">暂无可预约助教</view>
+    <view class="subtitle">助教配置完成后，会在这里展示状态和价格。</view>
+  </view>
+</view>

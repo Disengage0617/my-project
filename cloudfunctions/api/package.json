@@ -1,0 +1,12 @@
+{
+  "name": "billiards-api",
+  "version": "0.1.0",
+  "main": "index.js",
+  "scripts": {
+    "seed": "node scripts/seed.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "wx-server-sdk": "latest"
+  }
+}

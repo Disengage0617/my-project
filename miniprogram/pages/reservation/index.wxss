@@ -1,0 +1,37 @@
+.selectable-card {
+  position: relative;
+  border: 2rpx solid transparent;
+  transition: transform 120ms ease, background-color 120ms ease, border-color 120ms ease, box-shadow 120ms ease;
+}
+
+.selectable-card-pressed {
+  transform: scale(0.97);
+  background: #eef7f3;
+}
+
+.selected-card {
+  border-color: #0f5b4a;
+  background: #f0faf5;
+  box-shadow: 0 10rpx 28rpx rgba(15, 91, 74, 0.16);
+}
+
+.selected-card::after {
+  content: "";
+  position: absolute;
+  right: 18rpx;
+  bottom: 18rpx;
+  width: 18rpx;
+  height: 18rpx;
+  border-radius: 50%;
+  background: #0f5b4a;
+}
+
+.selected-tag {
+  background: #0f5b4a;
+  color: #ffffff;
+}
+
+.option-title {
+  font-size: 32rpx;
+  font-weight: 700;
+}

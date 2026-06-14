@@ -1,0 +1,51 @@
+{
+  "pages": [
+    "pages/home/index",
+    "pages/reservation/index",
+    "pages/reservation-detail/index",
+    "pages/store-price/index",
+    "pages/assistant-list/index",
+    "pages/assistant-booking/index",
+    "pages/campaign-list/index",
+    "pages/campaign-detail/index",
+    "pages/campaign-registration/index",
+    "pages/my-reservations/index",
+    "pages/staff-workbench/index",
+    "pages/arrival-review/index",
+    "pages/table-grid/index",
+    "pages/merchant-config/index",
+    "pages/no-show-locks/index",
+    "pages/merchant-dashboard/index"
+  ],
+  "window": {
+    "navigationBarTitleText": "台球预约",
+    "navigationBarBackgroundColor": "#0f5b4a",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#f6f7f4"
+  },
+  "tabBar": {
+    "color": "#66736d",
+    "selectedColor": "#0f5b4a",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/home/index",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/reservation/index",
+        "text": "预约"
+      },
+      {
+        "pagePath": "pages/my-reservations/index",
+        "text": "我的"
+      },
+      {
+        "pagePath": "pages/staff-workbench/index",
+        "text": "工作台"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

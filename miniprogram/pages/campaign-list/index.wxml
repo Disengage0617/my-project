@@ -1,0 +1,38 @@
+<view class="page">
+  <view class="page-header">
+    <view class="eyebrow">门店活动</view>
+    <view class="title large">找一场适合你的局</view>
+    <view class="subtitle">新手交流、会员练习和限额活动，报名后按规则确认。</view>
+  </view>
+
+  <view wx:if="{{loading}}" class="panel section">
+    <view class="subtitle">正在加载活动...</view>
+  </view>
+  <view wx:if="{{errorMessage}}" class="panel section">
+    <view class="subtitle status-danger">{{errorMessage}}</view>
+  </view>
+
+  <view class="stack">
+    <block wx:for="{{campaigns}}" wx:key="id">
+      <view class="panel" data-id="{{item.id}}" bindtap="goDetail">
+        <view class="row start">
+          <view>
+            <view class="title">{{item.title}}</view>
+            <view class="subtitle">{{item.timeText}}</view>
+          </view>
+          <view class="tag">{{item.statusText}}</view>
+        </view>
+        <view class="divider"></view>
+        <view class="row">
+          <view class="subtitle">已报名 {{item.registeredCount}} / {{item.quota || "不限"}}</view>
+          <view class="tag gold">剩余 {{item.leftCount}}</view>
+        </view>
+      </view>
+    </block>
+  </view>
+
+  <view wx:if="{{!loading && !campaigns.length}}" class="panel empty">
+    <view class="title">暂无活动</view>
+    <view class="subtitle">商家发布活动后，会在这里展示并支持报名。</view>
+  </view>
+</view>

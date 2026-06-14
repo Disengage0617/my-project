@@ -16,6 +16,38 @@
 - 在完整产品流程实现、测试工程师回归通过、验收官确认无关键问题前，不讨论上传、提交审核或发布。
 - 项目设置详见 `docs/项目执行设置-Codex中枢统一指派.md`。
 
+## 跨 Agent 消息格式强制规范
+
+Codex 中枢向任一 agent 分派任务、接收状态、交接、评审或修复指令时，必须使用以下固定格式，不得只写自然语言摘要：
+
+```text
+message_type: instruction / status / handoff / review / fix
+request_id: REQ-YYYYMMDD-HHMMSS-简短任务名
+from_lane: coordinator / product-planning / research / visual-design / frontend / backend / qa / reviewer / simple-helper
+to_lane: 目标 lane
+created_at: ISO 时间或当前日期时间
+recorded_in: 当前对话 / docs/worklog.md / docs/shared.md / lanes/<lane>/worklog.md
+
+消息内容：
+- 背景：
+- 任务：
+- 输入材料：
+- 允许改动范围：
+- 禁止改动范围：
+- 输出要求：
+- 验证方式：
+- 暂停条件：
+```
+
+强制要求：
+
+- `message_type` 必须只能取：`instruction`、`status`、`handoff`、`review`、`fix`。
+- `request_id` 必须包含日期时间和简短任务名，方便追踪。
+- `from_lane` 和 `to_lane` 必须明确，不允许省略。
+- `recorded_in` 必须写明归档位置；如果项目存在 `docs/worklog.md`、`docs/shared.md` 或 `lanes/<lane>/worklog.md`，阶段结果要同步沉淀。
+- 中枢指派、agent 交接、测试反馈、验收官评审、修复任务，都必须套用该格式。
+- 如果输出没有使用该格式，视为流程不合规，必须立即重写。
+
 ## 多 Agent 输出规则
 
 每次生成阶段性结果或最终结果时，必须包含以下信息：

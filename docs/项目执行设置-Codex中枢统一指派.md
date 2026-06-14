@@ -19,6 +19,35 @@
 7. 验收官 Agent：对照 PRD 和验收标准做完整检核，判断是否可交付。
 8. Codex 中枢：合并结论，只有验收官确认无关键问题后才找用户检查。
 
+## 2.1 跨 Agent 消息格式
+
+Codex 中枢向任一 agent 分派任务、接收状态、交接、评审或修复指令时，必须使用以下固定格式：
+
+```text
+message_type: instruction / status / handoff / review / fix
+request_id: REQ-YYYYMMDD-HHMMSS-简短任务名
+from_lane: coordinator / product-planning / research / visual-design / frontend / backend / qa / reviewer / simple-helper
+to_lane: 目标 lane
+created_at: ISO 时间或当前日期时间
+recorded_in: 当前对话 / docs/worklog.md / docs/shared.md / lanes/<lane>/worklog.md
+
+消息内容：
+- 背景：
+- 任务：
+- 输入材料：
+- 允许改动范围：
+- 禁止改动范围：
+- 输出要求：
+- 验证方式：
+- 暂停条件：
+```
+
+执行要求：
+
+- 中枢指派、agent 交接、测试反馈、验收官评审、修复任务，都必须套用该格式。
+- 如果输出没有使用该格式，视为流程不合规，必须立即重写。
+- 阶段结果需要归档时，优先写入 `docs/worklog.md`、`docs/shared.md` 或对应 `lanes/<lane>/worklog.md`。
+
 ## 3. 不允许中途停止的情况
 
 以下问题由 Codex 中枢继续指派修复，不需要问用户：

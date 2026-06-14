@@ -1,9 +1,31 @@
 <view class="page">
-  <view class="section">
-    <view class="title">爽约限制管理</view>
-    <view class="subtitle">员工标记未到后限制 3 天，店长可解除并记录原因</view>
+  <view class="page-header">
+    <view class="eyebrow">爽约限制</view>
+    <view class="title large">限制记录和解除</view>
+    <view class="subtitle">员工标记未到后限制 3 天，店长解除时必须记录原因。</view>
   </view>
-  <view class="card section">
-    <view class="subtitle">暂无限制记录</view>
+
+  <view class="stack">
+    <block wx:for="{{locks}}" wx:key="id">
+      <view class="panel">
+        <view class="row start">
+          <view>
+            <view class="title">{{item.userName}}</view>
+            <view class="subtitle">{{item.reason}} · {{item.lockUntilText}}</view>
+          </view>
+          <view class="tag {{item.status === '已解除' ? 'muted' : 'danger'}}">{{item.status}}</view>
+        </view>
+        <view class="divider"></view>
+        <view class="row">
+          <view class="subtitle">关联预约：{{item.reservationId}}</view>
+          <view class="tag" data-id="{{item.id}}" bindtap="lift">解除</view>
+        </view>
+      </view>
+    </block>
+  </view>
+
+  <view wx:if="{{!locks.length}}" class="panel empty">
+    <view class="title">暂无限制记录</view>
+    <view class="subtitle">标记未到后，限制记录会出现在这里。</view>
   </view>
 </view>

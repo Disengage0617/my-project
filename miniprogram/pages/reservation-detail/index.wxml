@@ -1,15 +1,45 @@
 <view class="page">
-  <view class="section">
-    <view class="title">预约详情</view>
-    <view class="subtitle">展示预约状态、桌台、时间、助教和到店规则</view>
+  <view class="page-header">
+    <view class="eyebrow">预约详情</view>
+    <view class="title large">预约状态和到店规则</view>
+    <view class="subtitle">确认桌台、时段和助教需求，到店后按流程核实。</view>
   </view>
-  <view class="card section">
+
+  <view wx:if="{{loading}}" class="panel section">
+    <view class="subtitle">正在加载预约详情...</view>
+  </view>
+  <view wx:if="{{errorMessage}}" class="panel section">
+    <view class="subtitle status-danger">{{errorMessage}}</view>
+  </view>
+
+  <view wx:if="{{reservation}}" class="panel section">
+    <view class="row start">
+      <view>
+        <view class="title">{{reservation.tableCode}} · {{reservation.tableType}}</view>
+        <view class="subtitle">{{reservation.startTime}}-{{reservation.endTime}}</view>
+      </view>
+      <view class="tag">{{reservation.status}}</view>
+    </view>
+    <view class="divider"></view>
+    <view class="row">
+      <view>助教</view>
+      <view class="tag muted">{{reservation.assistantText}}</view>
+    </view>
+  </view>
+
+  <view class="panel section">
     <view class="title">状态流转</view>
     <block wx:for="{{statusFlow}}" wx:key="*this">
-      <view class="row section">
+      <view class="divider"></view>
+      <view class="row">
         <view>{{item}}</view>
-        <view class="tag">P0</view>
+        <view class="tag {{reservation.status === item ? '' : 'muted'}}">{{reservation.status === item ? "当前" : "节点"}}</view>
       </view>
     </block>
+  </view>
+
+  <view class="panel flat">
+    <view class="title">到店说明</view>
+    <view class="subtitle">待到店时点击“我已到店”，员工核实后开台；未按时到店可能触发爽约限制。</view>
   </view>
 </view>

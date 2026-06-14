@@ -1,14 +1,21 @@
 <view class="page">
-  <view class="section">
-    <view class="title">商家配置</view>
-    <view class="subtitle">小程序内简化后台配置入口</view>
+  <view class="page-header">
+    <view class="eyebrow">配置中心</view>
+    <view class="title large">把门店基础资料补齐</view>
+    <view class="subtitle">商家后台能力还需要后端配置接口支持，本页先固定信息架构。</view>
   </view>
-  <block wx:for="{{entries}}" wx:key="*this">
-    <view class="card section">
-      <view class="row">
-        <view>{{item}}</view>
-        <view class="tag">P0</view>
+
+  <view class="stack">
+    <block wx:for="{{entries}}" wx:key="name">
+      <view class="panel">
+        <view class="row start">
+          <view>
+            <view class="title">{{item.name}}</view>
+            <view class="subtitle">{{item.desc}}</view>
+          </view>
+          <view class="tag gold">{{item.status}}</view>
+        </view>
       </view>
-    </view>
-  </block>
+    </block>
+  </view>
 </view>

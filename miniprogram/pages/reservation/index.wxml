@@ -1,35 +1,84 @@
-<view class="page safe-bottom">
-  <view class="page-header">
-    <view class="eyebrow">桌台预约</view>
-    <view class="title large">选好时段，到店即开</view>
-    <view class="subtitle">服务端会校验桌台、助教和爽约限制，避免重复预约。</view>
+<view class="page reservation-page safe-bottom">
+  <view class="brand-row">
+    <view class="brand-lockup">
+      <view class="brand-mark">W</view>
+      <view>
+        <view class="brand-name">W POOL</view>
+        <view class="brand-sub">台球俱乐部</view>
+      </view>
+    </view>
+    <view class="store-pill">昆明路店 ›</view>
   </view>
 
-  <view class="panel section">
-    <view class="row">
-      <view>
-        <view class="title">预约条件</view>
-        <view class="subtitle">{{startTime}} 开始 · {{durationHours}} 小时 · {{peopleCount}} 人</view>
-      </view>
-      <view class="tag gold">提前30分钟</view>
+  <view class="reservation-hero section">
+    <image class="hero-bg" src="/assets/generated/home-cyber-hero-table.png" mode="aspectFill" />
+    <view class="hero-mask"></view>
+    <view class="hero-content">
+      <view class="hero-title">预约桌台</view>
+      <view class="hero-slogan">精准选桌 · 到店即打</view>
     </view>
-    <view class="divider"></view>
-    <view class="grid">
-      <view class="row panel flat">
-        <view>时长</view>
-        <view class="row">
-          <view class="tag muted" data-delta="-1" bindtap="changeDuration">-</view>
-          <view class="tag">{{durationHours}}小时</view>
-          <view class="tag muted" data-delta="1" bindtap="changeDuration">+</view>
+  </view>
+
+  <view class="section">
+    <view class="section-title">选择日期</view>
+    <scroll-view scroll-x class="date-strip">
+      <block wx:for="{{dateOptions}}" wx:key="value">
+        <view class="date-chip {{selectedDate === item.value ? 'active-chip' : ''}}" data-value="{{item.value}}" bindtap="selectDate">
+          <view>{{item.label}}</view>
+          <text>{{item.dateText}}</text>
         </view>
+      </block>
+    </scroll-view>
+  </view>
+
+  <view class="booking-card section">
+    <view class="control-row">
+      <view class="control-title">时长</view>
+      <view class="stepper-row">
+        <view class="step-btn" data-delta="-1" bindtap="changeDuration">-</view>
+        <view class="step-value">{{durationHours}}小时</view>
+        <view class="step-btn" data-delta="1" bindtap="changeDuration">+</view>
       </view>
-      <view class="row panel flat">
-        <view>人数</view>
-        <view class="row">
-          <view class="tag muted" data-delta="-1" bindtap="changePeople">-</view>
-          <view class="tag">{{peopleCount}}人</view>
-          <view class="tag muted" data-delta="1" bindtap="changePeople">+</view>
+    </view>
+    <view class="control-row">
+      <view class="control-title">人数</view>
+      <view class="stepper-row">
+        <view class="step-btn" data-delta="-1" bindtap="changePeople">-</view>
+        <view class="step-value">{{peopleCount}}人</view>
+        <view class="step-btn" data-delta="1" bindtap="changePeople">+</view>
+      </view>
+    </view>
+    <view class="time-panel">
+      <view class="time-panel-head">
+        <view>
+          <view class="control-title">预计到店时间</view>
+          <view class="panel-desc">上下滑动选择预计到店时间，5 分钟一个可约时刻。</view>
         </view>
+        <view class="arrival-value">{{startTime}}</view>
+      </view>
+      <picker-view
+        class="time-wheel"
+        value="{{timePickerValue}}"
+        bindpickstart="startTimePicking"
+        bindchange="changeTimePicker"
+        bindpickend="endTimePicking"
+        indicator-class="time-wheel-indicator"
+        mask-class="time-wheel-mask"
+      >
+        <picker-view-column>
+          <block wx:for="{{timePickerHours}}" wx:key="*this">
+            <view class="time-wheel-item">{{item}}</view>
+          </block>
+        </picker-view-column>
+        <picker-view-column>
+          <block wx:for="{{timePickerMinutes}}" wx:key="*this">
+            <view class="time-wheel-item">{{item}}</view>
+          </block>
+        </picker-view-column>
+      </picker-view>
+      <view class="time-wheel-labels">
+        <view>小时</view>
+        <view>分钟</view>
       </view>
     </view>
   </view>
@@ -42,63 +91,51 @@
   </view>
 
   <view class="section">
-    <view class="row section">
-      <view class="title">选择桌台</view>
-      <view class="tag muted">{{tables.length}} 张</view>
-    </view>
-    <view class="grid">
+    <view class="section-title">选择桌台 <text>{{availabilityMessage}}</text></view>
+    <scroll-view scroll-x class="filter-strip">
+      <block wx:for="{{tableTypeOptions}}" wx:key="key">
+        <view class="filter-chip {{selectedTableType === item.key ? 'active-chip' : ''}}" data-key="{{item.key}}" bindtap="selectTableType">{{item.name}}</view>
+      </block>
+    </scroll-view>
+    <view class="table-grid">
       <block wx:for="{{tables}}" wx:key="id">
-        <view
-          class="card selectable-card {{selectedTableId === item.id ? 'selected-card' : ''}}"
-          data-id="{{item.id}}"
-          bindtap="selectTable"
-        >
-          <view class="row">
-            <view class="option-title">{{item.code}}</view>
-            <view class="tag {{selectedTableId === item.id ? 'selected-tag' : ''}}">
-              {{selectedTableId === item.id ? "已选" : item.status}}
+        <view class="table-card {{item.cardClass}} {{selectedTableId === item.id ? 'selected-card' : ''}}" data-id="{{item.id}}" bindtap="selectTable">
+          <image class="table-image" src="{{item.imageUrl}}" mode="aspectFill" />
+          <view class="table-badge" wx:if="{{index === 0}}">TOP</view>
+          <view class="table-info">
+            <view class="table-code">{{item.code}}</view>
+            <view class="table-type">{{item.type}}</view>
+            <view class="table-meta">剩余 {{durationHours}} 小时</view>
+            <view class="table-tags">
+              <text>{{peopleCount}}-6人</text>
+              <text>{{item.seatText}}</text>
             </view>
           </view>
-          <view class="subtitle">{{item.area}} · {{item.type}}</view>
-          <view class="subtitle">{{item.price}} 元/小时</view>
         </view>
       </block>
     </view>
   </view>
 
-  <view class="section">
-    <view class="row section">
-      <view class="title">助教需求</view>
-      <view class="tag muted">可不选</view>
-    </view>
-    <view class="stack">
+  <view class="assistant-strip section">
+    <view class="section-title">助理教练 <text>可不选</text></view>
+    <scroll-view scroll-x>
       <block wx:for="{{assistants}}" wx:key="id">
-        <view
-          class="card selectable-card {{selectedAssistantId === item.id ? 'selected-card' : ''}}"
-          data-id="{{item.id}}"
-          bindtap="selectAssistant"
-        >
-          <view class="row">
-            <view class="option-title">{{item.name}}</view>
-            <view class="tag {{selectedAssistantId === item.id ? 'selected-tag' : ''}}">
-              {{selectedAssistantId === item.id ? "已选" : item.status}}
-            </view>
+        <view class="assistant-chip {{selectedAssistantId === item.id ? 'selected-assistant' : ''}}" data-id="{{item.id}}" bindtap="selectAssistant">
+          <image class="assistant-avatar" src="{{item.photoUrl}}" mode="aspectFill" />
+          <view>
+            <view class="assistant-name">{{item.name}}</view>
+            <view class="assistant-price">¥{{item.price}}/小时</view>
           </view>
-          <view class="subtitle">{{item.tagsText}} · {{item.price}} 元/小时</view>
         </view>
       </block>
-    </view>
+    </scroll-view>
   </view>
 
-  <view class="panel section" bindtap="toggleRule">
-    <view class="row start">
-      <view>
-        <view class="title">预约规则</view>
-        <view class="subtitle">不收定金；到店后点击“我已到店”，员工核实后开台。</view>
-      </view>
-      <view class="tag {{ruleConfirmed ? '' : 'muted'}}">{{ruleConfirmed ? "已确认" : "未确认"}}</view>
+  <view class="fixed-submit">
+    <view class="submit-meta">{{selectedDate}} {{startTime}}-{{endTimeText}} · {{estimatedAmountText}}</view>
+    <view class="submit-button {{canSubmit ? '' : 'disabled'}}" bindtap="submitReservation">
+      <text>{{submitting ? '提交中...' : '立即预约'}}</text>
+      <view class="submit-arrow">›</view>
     </view>
   </view>
-
-  <view class="button secondary" bindtap="submitReservation">{{submiting ? "提交中..." : "提交预约"}}</view>
 </view>

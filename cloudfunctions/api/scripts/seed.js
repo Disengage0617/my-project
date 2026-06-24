@@ -1,4 +1,5 @@
 const cloud = require("wx-server-sdk");
+const { ASSISTANT_STATUS, TABLE_STATUS } = require("../src/constants");
 
 const env = process.env.WX_CLOUD_ENV || process.env.TCB_ENV || cloud.DYNAMIC_CURRENT_ENV;
 cloud.init({ env });
@@ -23,6 +24,31 @@ const TABLE_TYPE_PRICES = {
   gold: { offPeak: 5800, day: 7800, night: 10800 },
   rose_gold: { offPeak: 6800, day: 9800, night: 12800 }
 };
+
+const HOME_PAGE_CONFIG = {
+  _id: `${STORE_ID}_home_published`,
+  store_id: STORE_ID,
+  page_key: "home",
+  status: "published",
+  theme: {
+    primary_color: "#18d6a3",
+    accent_color: "#e6c15d",
+    background_style: "dark-neon"
+  },
+  modules: [
+    { id: "hero", type: "hero", enabled: true, sort_order: 1, title: "星火台球俱乐部", subtitle: "24小时营业 · 到店后员工核实开台", image_url: "/assets/generated/billiards-bg-option-1.png", cta_text: "立即预约桌台", link: "/pages/reservation/index" },
+    { id: "activities", type: "activity_entry", enabled: true, sort_order: 2, title: "店内活动", subtitle: "赛事、练习局和会员活动", image_url: "/assets/generated/billiards-bg-option-2.png", link: "/pages/campaign-list/index" },
+    { id: "coach", type: "assistant_entry", enabled: true, sort_order: 3, title: "助理教练", subtitle: "查看状态与价格", image_url: "/assets/generated/assistant-coach-card.jpg", link: "/pages/assistant-list/index" },
+    { id: "event_feature", type: "event_feature", enabled: true, sort_order: 4, title: "暗夜霓虹排位赛", subtitle: "今晚开放报名 · 名额 0 / 32", image_url: "/assets/generated/billiards-bg-option-4.png", tag: "筹备中", link: "/pages/campaign-list/index" }
+  ]
+};
+
+const ASSETS = [
+  { _id: `${STORE_ID}_asset_hero`, store_id: STORE_ID, name: "首页 Hero", type: "hero", url: "/assets/generated/billiards-bg-option-1.png", file_id: "", status: "active" },
+  { _id: `${STORE_ID}_asset_activity`, store_id: STORE_ID, name: "店内活动", type: "campaign", url: "/assets/generated/billiards-bg-option-2.png", file_id: "", status: "active" },
+  { _id: `${STORE_ID}_asset_event`, store_id: STORE_ID, name: "本店赛事", type: "campaign", url: "/assets/generated/billiards-bg-option-4.png", file_id: "", status: "active" },
+  { _id: `${STORE_ID}_asset_coach`, store_id: STORE_ID, name: "助教封面", type: "assistant", url: "/assets/generated/assistant-coach-card.jpg", file_id: "", status: "active" }
+];
 
 function addDays(days) {
   const date = new Date();
@@ -58,7 +84,8 @@ function buildTables() {
         code,
         area: group.area,
         type: group.type,
-        status: "空闲",
+        status: TABLE_STATUS.FREE,
+        status_text: "空闲",
         enabled: true,
         table_no: code,
         table_type: group.tableType,
@@ -108,13 +135,17 @@ function buildAssistants() {
       _id: `${STORE_ID}_assistant_001`,
       store_id: STORE_ID,
       name: "小乔",
-      avatar_url: "",
+      level: "初级",
+      level_name: "初级",
+      avatar_url: "/assets/generated/assistant-thumb.jpg",
+      photo_url: "/assets/generated/assistant-thumb.jpg",
+      thumb_url: "/assets/generated/assistant-thumb.jpg",
       tags: ["新手教学", "姿势纠正", "陪练"],
       intro: "适合新手入门、基础杆法和规则讲解。",
-      service_price_cent: 8800,
+      service_price_cent: 8000,
       service_unit: "hour",
-      status: "空闲",
-      status_code: "idle",
+      status: ASSISTANT_STATUS.IDLE,
+      status_text: "空闲",
       enabled: true,
       sort: 1,
       sort_order: 1
@@ -123,16 +154,115 @@ function buildAssistants() {
       _id: `${STORE_ID}_assistant_002`,
       store_id: STORE_ID,
       name: "阿宁",
-      avatar_url: "",
-      tags: ["进阶陪练", "走位训练", "比赛节奏"],
-      intro: "适合有基础玩家提升准度、走位和比赛策略。",
-      service_price_cent: 10800,
+      level: "初级",
+      level_name: "初级",
+      avatar_url: "/assets/generated/assistant-thumb.jpg",
+      photo_url: "/assets/generated/assistant-thumb.jpg",
+      thumb_url: "/assets/generated/assistant-thumb.jpg",
+      tags: ["基础陪练", "规则讲解", "轻松组局"],
+      intro: "适合第一次到店体验和轻度娱乐局。",
+      service_price_cent: 9800,
       service_unit: "hour",
-      status: "空闲",
-      status_code: "idle",
+      status: ASSISTANT_STATUS.IDLE,
+      status_text: "空闲",
       enabled: true,
       sort: 2,
       sort_order: 2
+    },
+    {
+      _id: `${STORE_ID}_assistant_003`,
+      store_id: STORE_ID,
+      name: "小雅",
+      level: "中级",
+      level_name: "中级",
+      avatar_url: "/assets/generated/billiards-bg-option-5-coach.png",
+      photo_url: "/assets/generated/billiards-bg-option-5-coach.png",
+      thumb_url: "/assets/generated/billiards-bg-option-5-coach.png",
+      tags: ["控球训练", "连续得分", "节奏陪练"],
+      intro: "适合提升控球、走位和连续得分稳定性。",
+      service_price_cent: 12800,
+      service_unit: "hour",
+      status: ASSISTANT_STATUS.IDLE,
+      status_text: "空闲",
+      enabled: true,
+      sort: 3,
+      sort_order: 3
+    },
+    {
+      _id: `${STORE_ID}_assistant_004`,
+      store_id: STORE_ID,
+      name: "安安",
+      level: "中级",
+      level_name: "中级",
+      avatar_url: "/assets/generated/assistant-coach-card.jpg",
+      photo_url: "/assets/generated/assistant-coach-card.jpg",
+      thumb_url: "/assets/generated/assistant-coach-card.jpg",
+      tags: ["姿势纠正", "出杆节奏", "娱乐陪练"],
+      intro: "适合想稳定出杆节奏和准度的玩家。",
+      service_price_cent: 15800,
+      service_unit: "hour",
+      status: ASSISTANT_STATUS.IDLE,
+      status_text: "空闲",
+      enabled: true,
+      sort: 4,
+      sort_order: 4
+    },
+    {
+      _id: `${STORE_ID}_assistant_005`,
+      store_id: STORE_ID,
+      name: "可可",
+      level: "高级",
+      level_name: "高级",
+      avatar_url: "/assets/generated/billiards-bg-option-5-coach.png",
+      photo_url: "/assets/generated/billiards-bg-option-5-coach.png",
+      thumb_url: "/assets/generated/billiards-bg-option-5-coach.png",
+      tags: ["走位训练", "比赛策略", "安全球"],
+      intro: "适合强化路线规划、防守转换和比赛节奏。",
+      service_price_cent: 18800,
+      service_unit: "hour",
+      status: ASSISTANT_STATUS.IDLE,
+      status_text: "空闲",
+      enabled: true,
+      sort: 5,
+      sort_order: 5
+    },
+    {
+      _id: `${STORE_ID}_assistant_006`,
+      store_id: STORE_ID,
+      name: "Mia",
+      level: "高级",
+      level_name: "高级",
+      avatar_url: "/assets/generated/assistant-coach-card.jpg",
+      photo_url: "/assets/generated/assistant-coach-card.jpg",
+      thumb_url: "/assets/generated/assistant-coach-card.jpg",
+      tags: ["清台训练", "高阶陪练", "会员局"],
+      intro: "适合会员提升清台效率和高阶局面处理。",
+      service_price_cent: 22800,
+      service_unit: "hour",
+      status: ASSISTANT_STATUS.RESTING,
+      status_text: "休息中",
+      enabled: true,
+      sort: 6,
+      sort_order: 6
+    },
+    {
+      _id: `${STORE_ID}_assistant_007`,
+      store_id: STORE_ID,
+      name: "Luna",
+      level: "网红级",
+      level_name: "网红级",
+      avatar_url: "/assets/generated/billiards-bg-option-5-coach.png",
+      photo_url: "/assets/generated/billiards-bg-option-5-coach.png",
+      thumb_url: "/assets/generated/billiards-bg-option-5-coach.png",
+      tags: ["氛围陪练", "主题活动", "拍照打卡"],
+      intro: "适合朋友组局、主题活动和高端陪练预约。",
+      service_price_cent: 28800,
+      service_unit: "hour",
+      status: ASSISTANT_STATUS.IDLE,
+      status_text: "空闲",
+      enabled: true,
+      sort: 7,
+      sort_order: 7
     }
   ];
 }
@@ -156,8 +286,8 @@ function buildCampaigns() {
       registered_count: 0,
       need_review: false,
       member_only: false,
-      status: "已发布",
-      status_code: "published",
+      status: "published",
+      status_text: "已发布",
       sort_order: 1
     },
     {
@@ -177,8 +307,8 @@ function buildCampaigns() {
       registered_count: 0,
       need_review: true,
       member_only: false,
-      status: "已发布",
-      status_code: "published",
+      status: "published",
+      status_text: "已发布",
       sort_order: 2
     }
   ];
@@ -228,12 +358,20 @@ async function seed() {
     await setDoc("campaign", campaign._id, campaign);
   }
 
+  await setDoc("page_config", HOME_PAGE_CONFIG._id, HOME_PAGE_CONFIG);
+
+  for (const asset of ASSETS) {
+    await setDoc("asset", asset._id, asset);
+  }
+
   return {
     store: STORE_ID,
     tables: tables.length,
     priceRules: priceRules.length,
     assistants: assistants.length,
-    campaigns: campaigns.length
+    campaigns: campaigns.length,
+    pageConfigs: 1,
+    assets: ASSETS.length
   };
 }
 

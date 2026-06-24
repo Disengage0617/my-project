@@ -7,15 +7,15 @@ const TABLE_TYPES = [
 ];
 
 const RESERVATION_STATUS = {
-  PENDING_CONFIRM: "待确认",
-  WAITING_ARRIVAL: "待到店",
-  WAITING_REVIEW: "待核实",
-  ARRIVED: "已到店",
-  IN_SERVICE: "进行中",
-  COMPLETED: "已完成",
-  CANCELED: "已取消",
-  NO_SHOW: "未到店",
-  RELEASED: "已释放"
+  PENDING_CONFIRM: "pending_confirm",
+  WAITING_ARRIVAL: "pending_arrival",
+  WAITING_REVIEW: "pending_verify",
+  ARRIVED: "arrived",
+  IN_SERVICE: "in_progress",
+  COMPLETED: "completed",
+  CANCELED: "canceled",
+  NO_SHOW: "no_show",
+  RELEASED: "released"
 };
 
 const TABLE_STATUS = {

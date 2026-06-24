@@ -5,6 +5,13 @@
     <view class="subtitle">员工标记未到后限制 3 天，店长解除时必须记录原因。</view>
   </view>
 
+  <view wx:if="{{loading}}" class="panel section">
+    <view class="subtitle">正在加载限制记录...</view>
+  </view>
+  <view wx:if="{{errorMessage}}" class="panel section">
+    <view class="subtitle status-danger">{{errorMessage}}</view>
+  </view>
+
   <view class="stack">
     <block wx:for="{{locks}}" wx:key="id">
       <view class="panel">
@@ -18,13 +25,13 @@
         <view class="divider"></view>
         <view class="row">
           <view class="subtitle">关联预约：{{item.reservationId}}</view>
-          <view class="tag" data-id="{{item.id}}" bindtap="lift">解除</view>
+          <view class="tag {{item.status === '已解除' ? 'muted' : ''}}" data-id="{{item.id}}" bindtap="lift">{{actioningId === item.id ? '解除中' : '解除'}}</view>
         </view>
       </view>
     </block>
   </view>
 
-  <view wx:if="{{!locks.length}}" class="panel empty">
+  <view wx:if="{{!loading && !locks.length}}" class="panel empty">
     <view class="title">暂无限制记录</view>
     <view class="subtitle">标记未到后，限制记录会出现在这里。</view>
   </view>

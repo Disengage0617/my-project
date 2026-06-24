@@ -2,7 +2,17 @@
   <view class="page-header">
     <view class="eyebrow">配置中心</view>
     <view class="title large">把门店基础资料补齐</view>
-    <view class="subtitle">商家后台能力还需要后端配置接口支持，本页先固定信息架构。</view>
+    <view class="subtitle">商家配置、客户列表和报名名单已接入只读检查；真实保存需由中枢授权后再打开。</view>
+  </view>
+
+  <view wx:if="{{loading}}" class="panel section">
+    <view class="subtitle">正在检查配置接口...</view>
+  </view>
+  <view wx:if="{{errorMessage}}" class="panel section">
+    <view class="subtitle status-danger">{{errorMessage}}</view>
+  </view>
+  <view wx:if="{{resultMessage}}" class="panel section">
+    <view class="subtitle status-success">{{resultMessage}}</view>
   </view>
 
   <view class="stack">
@@ -14,6 +24,14 @@
             <view class="subtitle">{{item.desc}}</view>
           </view>
           <view class="tag gold">{{item.status}}</view>
+        </view>
+        <view class="divider"></view>
+        <view class="row">
+          <view class="subtitle">{{item.action}}</view>
+          <view class="config-actions">
+            <view wx:if="{{item.key === 'assistant'}}" class="tag" bindtap="uploadAssistantPhoto">{{uploadingAssistantPhoto ? '上传中' : '上传照片'}}</view>
+            <view class="tag muted" data-key="{{item.key}}" bindtap="runEntry">{{actioningKey === item.key ? '处理中' : '联调'}}</view>
+          </view>
         </view>
       </view>
     </block>

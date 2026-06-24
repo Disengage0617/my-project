@@ -1,0 +1,6 @@
+@import "../../app.wxss";
+
+.feature-copy {
+  flex: 1;
+  min-width: 0;
+}

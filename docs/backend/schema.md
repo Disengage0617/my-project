@@ -371,6 +371,8 @@
 | form_data | object | 否 | 扩展报名信息 |
 | reviewed_by | string | 否 | 审核人 |
 | reviewed_at | timestamp | 否 | 审核时间 |
+| reject_reason | string | 否 | 审核拒绝原因 |
+| quota_reserved | boolean | 否 | 是否已占用活动名额，用于拒绝/取消时回退 |
 | created_at | timestamp | 是 | 创建时间 |
 | updated_at | timestamp | 是 | 更新时间 |
 
@@ -404,6 +406,64 @@
 - 唯一索引：`store_id + user_id`
 - 普通索引：`store_id + phone`
 
+### member_account
+
+会员/储值账户。第一期只读展示余额，不接微信支付和充值。
+
+| 字段 | 类型 | 必填 | 说明 |
+|---|---|---:|---|
+| _id | string | 是 | 账户 ID |
+| store_id | string | 是 | 门店 ID |
+| user_id | string | 是 | 用户 ID |
+| balance_cent | number | 是 | 储值余额，单位分 |
+| member_level_name | string | 否 | 会员等级展示名 |
+| stored_value_enabled | boolean | 是 | 是否展示储值能力 |
+| payment_enabled | boolean | 否 | 是否启用支付；MVP 一期为 false |
+| created_at | timestamp | 是 | 创建时间 |
+| updated_at | timestamp | 是 | 更新时间 |
+
+索引：
+- 唯一索引：`store_id + user_id`
+
+### coupon
+
+用户优惠券。
+
+| 字段 | 类型 | 必填 | 说明 |
+|---|---|---:|---|
+| _id | string | 是 | 优惠券 ID |
+| store_id | string | 是 | 门店 ID |
+| user_id | string | 是 | 用户 ID |
+| title | string | 是 | 优惠券标题 |
+| status | enum | 是 | `available` / `used` / `expired` |
+| amount_cent | number | 否 | 优惠金额，单位分 |
+| valid_from | timestamp | 否 | 生效时间 |
+| valid_to | timestamp | 否 | 失效时间 |
+| created_at | timestamp | 是 | 创建时间 |
+| updated_at | timestamp | 是 | 更新时间 |
+
+索引：
+- 普通索引：`store_id + user_id + status`
+
+### order
+
+用户订单/消费记录。第一期仅展示已有订单，不发起支付。
+
+| 字段 | 类型 | 必填 | 说明 |
+|---|---|---:|---|
+| _id | string | 是 | 订单 ID |
+| store_id | string | 是 | 门店 ID |
+| user_id | string | 是 | 用户 ID |
+| title | string | 是 | 订单标题 |
+| order_type | enum | 否 | `reservation` / `assistant` / `stored_value` / `other` |
+| amount_cent | number | 否 | 订单金额，单位分 |
+| status | enum | 是 | `pending` / `paid` / `completed` / `canceled` / `refunded` |
+| created_at | timestamp | 是 | 创建时间 |
+| updated_at | timestamp | 是 | 更新时间 |
+
+索引：
+- 普通索引：`store_id + user_id + created_at`
+
 ### audit_log
 
 关键操作审计。
@@ -425,3 +485,52 @@
 索引：
 - 普通索引：`store_id + action + created_at`
 - 普通索引：`store_id + operator_user_id + created_at`
+
+## 7. Web 后台与页面配置
+
+### page_config
+
+小程序页面配置，由 Web 后台编辑，小程序端读取 `published` 版本。
+
+| 字段 | 类型 | 必填 | 说明 |
+|---|---|---:|---|
+| _id | string | 是 | 配置 ID，建议 `store_id + page_key + status` |
+| store_id | string | 是 | 门店 ID |
+| page_key | string | 是 | 页面标识，例如 `home` |
+| status | enum | 是 | `draft` / `published` |
+| theme | object | 否 | 主题配置 |
+| modules | array | 是 | 页面模块列表 |
+| published_at | timestamp | 否 | 发布时间 |
+| created_at | timestamp | 是 | 创建时间 |
+| updated_at | timestamp | 是 | 更新时间 |
+
+`modules` 常用字段：
+- `id`：模块 ID。
+- `type`：模块类型，例如 `hero`、`activity_entry`、`assistant_entry`。
+- `enabled`：是否启用。
+- `sort_order`：排序。
+- `title` / `subtitle` / `image_url` / `link`：展示内容。
+
+索引：
+- 普通索引：`store_id + page_key + status`
+
+### asset
+
+素材库，供 Web 后台上传/选择图片并绑定到页面配置、活动、助教等业务对象。
+
+| 字段 | 类型 | 必填 | 说明 |
+|---|---|---:|---|
+| _id | string | 是 | 素材 ID |
+| store_id | string | 是 | 门店 ID |
+| name | string | 是 | 素材名称 |
+| type | enum | 是 | `hero` / `campaign` / `assistant` / `other` |
+| url | string | 是 | 访问地址 |
+| file_id | string | 否 | 云存储 fileID |
+| status | enum | 是 | `active` / `deleted` |
+| is_deleted | boolean | 是 | 是否软删除 |
+| created_at | timestamp | 是 | 创建时间 |
+| updated_at | timestamp | 是 | 更新时间 |
+
+索引：
+- 普通索引：`store_id + type + created_at`
+- 普通索引：`store_id + status + created_at`

@@ -18,22 +18,25 @@
         <view class="title">{{reservation.tableCode}} · {{reservation.tableType}}</view>
         <view class="subtitle">{{reservation.startTime}}-{{reservation.endTime}}</view>
       </view>
-      <view class="tag">{{reservation.status}}</view>
+      <view class="tag">{{reservation.statusText}}</view>
     </view>
     <view class="divider"></view>
     <view class="row">
       <view>助教</view>
       <view class="tag muted">{{reservation.assistantText}}</view>
     </view>
+    <view wx:if="{{reservation.canSubmitArrival}}" class="button secondary" bindtap="submitArrival">
+      {{actioning ? '提交中...' : '我已到店'}}
+    </view>
   </view>
 
-  <view class="panel section">
+  <view wx:if="{{reservation}}" class="panel section">
     <view class="title">状态流转</view>
-    <block wx:for="{{statusFlow}}" wx:key="*this">
+    <block wx:for="{{statusFlow}}" wx:key="key">
       <view class="divider"></view>
       <view class="row">
-        <view>{{item}}</view>
-        <view class="tag {{reservation.status === item ? '' : 'muted'}}">{{reservation.status === item ? "当前" : "节点"}}</view>
+        <view>{{item.label}}</view>
+        <view class="tag {{reservation.status === item.key ? '' : 'muted'}}">{{reservation.status === item.key ? '当前' : '节点'}}</view>
       </view>
     </block>
   </view>

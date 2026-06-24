@@ -1,1 +1,10 @@
+@import "../../app.wxss";
 
+.config-actions {
+  display: flex;
+  align-items: center;
+}
+
+.config-actions .tag {
+  margin-left: 12rpx;
+}

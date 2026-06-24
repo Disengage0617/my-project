@@ -1,60 +1,127 @@
 <view class="page">
-  <view class="hero section">
-    <view class="eyebrow">今日可约</view>
-    <view class="title large">{{overview.store.name || "星火台球俱乐部"}}</view>
-    <view class="subtitle">{{overview.store.businessHours || "24小时营业"}} · {{overview.store.tableCount || 0}} 张桌台 · 到店后员工核实开台</view>
-    <view class="grid section" style="margin-top: 30rpx;">
-      <view>
-        <view class="subtitle">当前空桌</view>
-        <view class="metric light">{{overview.freeTableCount || 0}}</view>
+  <view class="cyber-cover section">
+    <swiper
+      class="cover-swiper"
+      autoplay="true"
+      circular="true"
+      interval="4200"
+      duration="520"
+      current="{{activeHeroIndex}}"
+      bindchange="heroSwiperChange"
+    >
+      <swiper-item wx:for="{{heroSlides}}" wx:key="key">
+        <image class="cover-bg" src="{{item.image_url}}" mode="aspectFill" />
+      </swiper-item>
+    </swiper>
+    <view class="cover-shade"></view>
+
+    <view class="cover-top">
+      <view class="brand-lockup">
+        <view class="brand-mark">W</view>
+        <view>
+          <view class="brand-name">W POOL</view>
+          <view class="brand-sub">PREMIUM BILLIARDS</view>
+        </view>
       </view>
-      <view>
-        <view class="subtitle">空闲助教</view>
-        <view class="metric light">{{overview.freeAssistantCount || 0}}</view>
+      <view class="store-pill">
+        <view class="store-name">{{overview.store.name || 'W 台球 · 昆明路店'}}</view>
+        <view class="store-status">{{overview.store.businessHours || '24小时营业'}} · 在线</view>
       </view>
     </view>
-    <view class="button secondary" bindtap="goReservation">立即预约桌台</view>
+
+    <view class="cover-copy">
+      <view class="neon-kicker">{{activeHeroSlide.kicker}}</view>
+      <view class="club-title">{{activeHeroSlide.title}}</view>
+      <view class="club-subtitle">{{activeHeroSlide.subtitle}}</view>
+    </view>
+
+    <view class="cover-live-card">
+      <view class="live-card-title">店内实时</view>
+      <view class="live-card-row">
+        <view>
+          <view class="live-label">空闲桌台</view>
+          <view class="live-number">{{overview.freeTableCount || 0}}<text>张</text></view>
+        </view>
+        <view>
+          <view class="live-label">空闲助教</view>
+          <view class="live-number">{{overview.freeAssistantCount || 0}}<text>位</text></view>
+        </view>
+      </view>
+      <view class="live-card-foot">
+        <text>总桌台 {{overview.store.tableCount || 40}} 张</text>
+        <text>30 秒更新</text>
+      </view>
+    </view>
+
+    <view class="cover-event" bindtap="goCampaigns">
+      <view class="event-kicker">限时赛事</view>
+      <view class="event-title">{{eventModule.title}}</view>
+      <view class="event-meta">{{eventModule.subtitle}}</view>
+    </view>
+
+    <view class="cover-dots">
+      <view
+        wx:for="{{heroSlides}}"
+        wx:key="key"
+        class="cover-dot {{activeHeroIndex === index ? 'active' : ''}}"
+      ></view>
+    </view>
   </view>
 
   <view wx:if="{{errorMessage}}" class="section panel flat">
     <view class="subtitle status-danger">{{errorMessage}}</view>
   </view>
 
-  <view class="grid section">
-    <view class="card" bindtap="goPrice">
-      <view class="tag gold">价格</view>
-      <view class="title">分区时段价</view>
-      <view class="subtitle">普台、银腿、独牙、金腿</view>
-    </view>
-    <view class="card" bindtap="goAssistants">
-      <view class="tag">助教</view>
-      <view class="title">陪练服务</view>
-      <view class="subtitle">查看状态与价格</view>
+  <view class="zone-section section">
+    <view
+      wx:for="{{tableZones}}"
+      wx:key="key"
+      class="zone-card zone-{{item.tone}} {{activeZoneKey === item.key ? 'active' : ''}}"
+      data-zone-key="{{item.key}}"
+      bindtap="selectZone"
+    >
+      <view class="zone-letter">{{item.letter}}</view>
+      <view class="zone-name">{{item.name}}</view>
+      <view class="zone-range">{{item.range}}</view>
+      <view class="zone-count"><text>{{item.free}}</text>/{{item.total}}</view>
     </view>
   </view>
 
-  <view class="panel section">
-    <view class="row">
-      <view>
-        <view class="title">门店活动</view>
-        <view class="subtitle">新手交流、会员练习和限额活动</view>
-      </view>
-      <view class="tag" bindtap="goCampaigns">查看</view>
+  <view class="reservation-cta section" bindtap="goReservation">
+    <view>
+      <view class="cta-kicker">提前锁台 · 到店即打</view>
+      <view class="cta-title">{{heroModule.cta_text || '立即预约桌台'}}</view>
+      <view class="cta-subtitle">提前 {{overview.store.reservationLeadMinutes || 30}} 分钟可约 ｜ 到店后员工核实开台</view>
     </view>
-    <block wx:for="{{overview.campaigns}}" wx:key="id">
-      <view class="divider"></view>
-      <view class="row">
-        <view>
-          <view>{{item.title}}</view>
-          <view class="subtitle">名额 {{item.registeredCount || item.registered_count || 0}} / {{item.quota || "不限"}}</view>
-        </view>
-        <view class="tag muted">{{item.statusText || item.status || "进行中"}}</view>
-      </view>
-    </block>
+    <view class="cta-orb">8</view>
   </view>
 
-  <view class="panel flat section">
-    <view class="title">预约规则</view>
-    <view class="subtitle">最早提前 {{overview.store.reservationLeadMinutes || 30}} 分钟预约；未到店限制 {{overview.store.noShowLockDays || 3}} 天。一期不收定金，到店后由员工核实开台。</view>
+  <view class="quick-grid section">
+    <view class="quick-card" bindtap="goPrice">
+      <view class="quick-icon">价</view>
+      <view class="quick-title">分区时段价</view>
+      <view class="quick-subtitle">按区域查看价格</view>
+    </view>
+    <view class="quick-card" bindtap="goAssistants">
+      <view class="quick-icon">助</view>
+      <view class="quick-title">陪练助教</view>
+      <view class="quick-subtitle">空闲助教可约</view>
+    </view>
+    <view class="quick-card" bindtap="goCampaigns">
+      <view class="quick-icon">赛</view>
+      <view class="quick-title">门店活动</view>
+      <view class="quick-subtitle">报名赢好礼</view>
+    </view>
+    <view class="quick-card" bindtap="goMyReservations">
+      <view class="quick-icon">约</view>
+      <view class="quick-title">我的预约</view>
+      <view class="quick-subtitle">到店 · 记录 · 订单</view>
+    </view>
+  </view>
+
+  <view class="rule-strip section">
+    <view>最早可约提前 {{overview.store.reservationLeadMinutes || 30}} 分钟</view>
+    <view>爽约限制 {{overview.store.noShowLockDays || 3}} 天</view>
+    <view>到店需核实后开台</view>
   </view>
 </view>

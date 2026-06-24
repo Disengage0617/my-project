@@ -1,4 +1,4 @@
-const api = require("../../services/api");
+const api = require("../../services/api.js");
 
 Page({
   data: {
@@ -14,8 +14,24 @@ Page({
   },
 
   onLoad() {
-    api.call("getStoreOverview", { storeId: getApp().globalData.storeId }).then((overview) => {
-      this.setData({ overview, errorMessage: "" });
+    const storeId = getApp().globalData.storeId;
+    Promise.all([
+      api.call("getStoreOverview", { storeId }),
+      api.call("getCustomers", { storeId }),
+      api.call("getCampaignRegistrations", { storeId }),
+      api.call("getNoShowRecords", { storeId })
+    ]).then(([overview, customers, registrations, noShows]) => {
+      this.setData({
+        overview,
+        entries: [
+          { name: "门店配置", status: "已接入" },
+          { name: "客户沉淀", status: `${customers.total || 0} 人` },
+          { name: "活动报名", status: `${registrations.total || 0} 条` },
+          { name: "爽约限制", status: `${noShows.total || 0} 条` },
+          { name: "桌台状态", status: "已接入" }
+        ],
+        errorMessage: ""
+      });
     }).catch((error) => {
       this.setData({ errorMessage: error.message || "商家概览加载失败" });
     });

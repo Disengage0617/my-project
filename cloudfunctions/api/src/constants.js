@@ -1,35 +1,53 @@
 const RESERVATION_STATUS = {
-  PENDING_CONFIRM: "待确认",
-  WAITING_ARRIVAL: "待到店",
-  WAITING_REVIEW: "待核实",
-  ARRIVED: "已到店",
-  IN_SERVICE: "进行中",
-  COMPLETED: "已完成",
-  CANCELED: "已取消",
-  NO_SHOW: "未到店",
-  RELEASED: "已释放"
+  PENDING_CONFIRM: "pending_confirm",
+  WAITING_ARRIVAL: "pending_arrival",
+  WAITING_REVIEW: "pending_verify",
+  ARRIVED: "arrived",
+  IN_SERVICE: "in_progress",
+  COMPLETED: "completed",
+  CANCELED: "canceled",
+  NO_SHOW: "no_show",
+  RELEASED: "released"
 };
 
 const TABLE_STATUS = {
-  FREE: "空闲",
-  RESERVED: "已预约",
-  USING: "使用中",
-  CLEANING: "清洁中",
-  REPAIRING: "维修中",
-  DISABLED: "停用"
+  FREE: "idle",
+  RESERVED: "reserved",
+  USING: "in_use",
+  CLEANING: "cleaning",
+  REPAIRING: "repairing",
+  DISABLED: "disabled"
+};
+
+const ASSISTANT_STATUS = {
+  OFF_SHIFT: "off_shift",
+  IDLE: "idle",
+  RESERVED: "reserved",
+  SERVING: "serving",
+  RESTING: "resting",
+  CHECKED_OUT: "checked_out"
 };
 
 const ASSISTANT_RESERVATION_STATUS = {
-  PENDING_CONFIRM: "待确认",
-  CONFIRMED: "已确认",
-  COMPLETED: "已完成",
-  CANCELED: "已取消"
+  PENDING_CONFIRM: "pending_confirm",
+  CONFIRMED: "confirmed",
+  SERVING: "serving",
+  COMPLETED: "completed",
+  CANCELED: "canceled",
+  NO_SHOW: "no_show"
 };
 
 const CAMPAIGN_REGISTRATION_STATUS = {
-  PENDING_REVIEW: "待审核",
-  SUCCESS: "报名成功",
-  CANCELED: "已取消"
+  PENDING_REVIEW: "pending_review",
+  SUCCESS: "approved",
+  REJECTED: "rejected",
+  CANCELED: "canceled"
+};
+
+const NO_SHOW_STATUS = {
+  ACTIVE: "active",
+  LIFTED: "lifted",
+  EXPIRED: "expired"
 };
 
 const ACTIVE_RESERVATION_STATUSES = [
@@ -42,18 +60,21 @@ const ACTIVE_RESERVATION_STATUSES = [
 
 const ACTIVE_ASSISTANT_RESERVATION_STATUSES = [
   ASSISTANT_RESERVATION_STATUS.PENDING_CONFIRM,
-  ASSISTANT_RESERVATION_STATUS.CONFIRMED
+  ASSISTANT_RESERVATION_STATUS.CONFIRMED,
+  ASSISTANT_RESERVATION_STATUS.SERVING
 ];
 
 const NO_SHOW_LOCK_DAYS = 3;
 const RESERVATION_LEAD_MINUTES = 30;
 
 module.exports = {
-  ACTIVE_RESERVATION_STATUSES,
   ACTIVE_ASSISTANT_RESERVATION_STATUSES,
+  ACTIVE_RESERVATION_STATUSES,
   ASSISTANT_RESERVATION_STATUS,
+  ASSISTANT_STATUS,
   CAMPAIGN_REGISTRATION_STATUS,
   NO_SHOW_LOCK_DAYS,
+  NO_SHOW_STATUS,
   RESERVATION_LEAD_MINUTES,
   RESERVATION_STATUS,
   TABLE_STATUS

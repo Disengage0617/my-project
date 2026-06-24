@@ -26,6 +26,16 @@ store_demo_001
 | `assistant` | 2 | 两个可预约助教 |
 | `campaign` | 2 | 新人活动和周末比赛活动 |
 
+真实云端联调前还需确认以下业务集合已存在，即使当前为空也应在云数据库中建好，避免业务 action 首次读写时报 `DATABASE_COLLECTION_NOT_EXIST`：
+
+- `customer_profile`：客户资料沉淀、手机号授权、预约/活动次数累计。
+- `reservation`、`reservation_lock`：预约流水与短锁。
+- `assistant_reservation`：助教预约流水。
+- `campaign_registration`：活动报名流水。
+- `no_show_record`：爽约限制记录。
+- `table_status_log`、`assistant_status_log`、`audit_log`：状态流水与审计日志。
+- `user`、`staff_user`、`member_account`、`coupon`、`order`：登录/角色、个人中心只读资料和后续业务扩展。
+
 ## 2. 运行方式
 
 进入云函数目录：
@@ -133,6 +143,7 @@ WX_CLOUD_ENV=你的云开发环境ID npm run seed
 
 - 脚本只初始化基础配置集合。
 - 脚本不会清理 `reservation`、`assistant_reservation`、`campaign_registration`、`no_show_record` 等业务流水。
+- `customer_profile` 等业务集合如不存在，需要在真实云端联调前单独创建空集合；创建集合属于真实云数据库写配置操作，必须先取得明确授权。
 - 如需重置业务流水，请另行评估数据风险后手动处理。
 
 ## 5. 验收方式
@@ -144,6 +155,7 @@ WX_CLOUD_ENV=你的云开发环境ID npm run seed
 3. `price_rule` 按 `store_id=store_demo_001` 查询共有 3 条。
 4. `assistant` 按 `store_id=store_demo_001` 查询共有 2 条。
 5. `campaign` 按 `store_id=store_demo_001` 查询共有 2 条且状态为 `已发布`。
+6. `customer_profile` 集合存在；首次真实预约前可以为空，但集合本身不应缺失。
 
 也可调用云函数 `api`：
 

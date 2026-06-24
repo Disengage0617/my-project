@@ -13,9 +13,8 @@
 
 ```json
 {
-  "success": true,
-  "data": {},
-  "trace_id": "202606131700000001"
+  "ok": true,
+  "data": {}
 }
 ```
 
@@ -23,15 +22,13 @@
 
 ```json
 {
-  "success": false,
-  "error": {
-    "code": "RESERVATION_CONFLICT",
-    "message": "该桌台当前时段已被预约",
-    "details": {}
-  },
-  "trace_id": "202606131700000001"
+  "ok": false,
+  "code": "RESERVATION_CONFLICT",
+  "message": "该桌台当前时段已被预约"
 }
 ```
+
+说明：当前云函数入口 `cloudfunctions/api/index.js` 统一读取 `{ action, payload }`，成功返回 `{ ok: true, data }`，失败返回 `{ ok: false, code, message }`。各 action 文档中的“出参”均为 `data` 内部结构。
 
 ### 通用错误码
 
@@ -57,7 +54,7 @@
 
 ### loginByWechat
 
-微信登录，创建或更新用户。
+微信登录，创建或更新用户。当前本地测试入口依赖云函数上下文 `OPENID`，也兼容测试 payload 中的 `openid`；真实微信登录以云函数上下文为准，不把本地 seam 当作真实云端验收。
 
 入参：
 
@@ -83,7 +80,7 @@
 
 ### authorizePhone
 
-手机号授权。
+手机号授权。当前 P0 本地可测入口接受 `phone` / `phoneNumber` / `purePhoneNumber` 写入 `user`，并在传入 `store_id` 时同步 `customer_profile`；真实微信手机号解密需在云端联调阶段接入，不能用本地传参冒充真实授权验收。
 
 入参：
 
@@ -114,6 +111,8 @@
   "store_id": "store_001"
 }
 ```
+
+权限：登录用户。无员工记录时返回 `role=user`、空权限。
 
 出参：
 
@@ -351,10 +350,21 @@
 {
   "_id": "reservation_001",
   "status": "pending_arrival",
+  "tableCode": "PT-01",
+  "table_code": "PT-01",
+  "tableType": "普台",
+  "table_type_name": "普台",
   "table": {
     "_id": "table_001",
+    "table_id": "table_001",
     "table_no": "PT-01",
-    "table_type_name": "普台"
+    "code": "PT-01",
+    "name": "PT-01",
+    "table_type": "standard",
+    "table_type_name": "普台",
+    "area_name": "普通区",
+    "status": "idle",
+    "enabled": true
   },
   "start_time": 1781344800000,
   "end_time": 1781348400000,
@@ -364,6 +374,12 @@
   }
 }
 ```
+
+说明：
+
+- `table` 为后端补齐的桌台摘要，用于详情页展示桌台编号、桌型、区域和状态。
+- `tableCode/table_code/tableType/table_type_name` 为兼容前端详情页的顶层别名，避免页面只能回退显示 `table_id`。
+- 如果桌台记录不存在或不属于同一门店，`table` 返回 `null`，顶层桌台编号回退为 `table_id`。
 
 ### confirmReservation
 
@@ -706,6 +722,9 @@
 
 约束：
 - 关键配置变更必须写 `audit_log`。
+- 配置写入必须做字段级校验：桌台/助教/活动/价格状态枚举受控，金额使用整数分，布尔字段必须为 boolean。
+- `manageTables:disable` 必须检查该桌台是否存在有效预约；与 `updateTableStatus` 一致，有有效预约时返回 `TABLE_HAS_ACTIVE_RESERVATION`。
+- `managePriceRules` 的 `price_cent` 必须为非负整数，不能使用浮点数。
 
 ## 6. 助教
 
@@ -952,6 +971,7 @@
 - 报名前必须存在 `nickname` 和 `phone`。
 - 限额活动必须通过短锁或事务扣减 `quota_used`，禁止超报。
 - `need_review=true` 时状态为 `pending_review`；否则为 `approved`。
+- 当前实现使用 `reservation_lock` 的 `campaign:{store_id}:{campaign_id}` 资源锁保护报名创建、重复提交和名额扣减。
 
 ### manageCampaigns
 
@@ -980,6 +1000,46 @@
   }
 }
 ```
+
+约束：
+- `action` 支持 `upsert`、`update`、`publish`、`offline`。
+- `title`、`campaign_type`、`status`、`quota_total`、`quota_used`、`need_review`、`member_only`、`start_time/end_time` 按字段规则校验。
+
+### reviewCampaignRegistration
+
+活动报名审核。
+
+权限：`staff` 及以上。
+
+入参：
+
+```json
+{
+  "store_id": "store_001",
+  "registration_id": "registration_001",
+  "action": "approve",
+  "reason": ""
+}
+```
+
+出参：
+
+```json
+{
+  "registration": {
+    "_id": "registration_001",
+    "status": "approved",
+    "reviewed_by": "openid",
+    "reviewed_at": "2026-06-20T12:00:00.000Z"
+  }
+}
+```
+
+约束：
+- 只允许 `pending_review -> approved/rejected`。
+- `reject` 必须填写 `reason`，写入 `reject_reason`。
+- 拒绝已占用名额的报名时回退 `campaign.quota_used` / `registered_count`。
+- 必须写 `audit_log`。
 
 ### getCampaignRegistrations
 
@@ -1011,11 +1071,91 @@
       "created_at": 1781341200000
     }
   ],
-  "total": 1
+  "total": 1,
+  "page": 1,
+  "page_size": 20
 }
 ```
 
+约束：
+- 支持 `campaign_id`、`status`、`page`、`page_size`。
+- 普通员工手机号脱敏，`manager` / `admin` 可看完整手机号。
+
 ## 8. 客户与限制
+
+### getMineCenter
+
+我的中心汇总接口，供小程序“我的”页读取用户资料、授权状态、储值余额、优惠券、订单和预约摘要。第一期只读展示，不接微信支付和充值。
+
+权限：登录用户本人。
+
+入参：
+
+```json
+{
+  "store_id": "store_001"
+}
+```
+
+出参：
+
+```json
+{
+  "profile": {
+    "nickName": "用户昵称",
+    "avatarUrl": "",
+    "memberLevel": "普通会员",
+    "phone": "13800000000",
+    "phoneAuthorized": true,
+    "reservationCount": 3,
+    "noShowCount": 0
+  },
+  "auth": {
+    "loggedIn": true,
+    "openid": "openid_xxx",
+    "profileAuthorized": true,
+    "phoneAuthorized": true,
+    "paymentEnabled": false
+  },
+  "wallet": {
+    "balance_cent": 12000,
+    "balanceCent": 12000,
+    "balanceText": "¥120.00",
+    "storedValueEnabled": true,
+    "paymentEnabled": false,
+    "rechargeEnabled": false
+  },
+  "summary": {
+    "reservationCount": 3,
+    "couponCount": 1,
+    "orderCount": 1,
+    "noShowLockCount": 0
+  },
+  "coupons": [],
+  "orders": [],
+  "reservations": [
+    {
+      "_id": "reservation_001",
+      "tableCode": "A01",
+      "tableType": "普台",
+      "table": {
+        "_id": "table_001",
+        "table_no": "A01",
+        "table_type_name": "普台"
+      }
+    }
+  ],
+  "assistantReservations": [],
+  "campaignRegistrations": [],
+  "noShowLocks": []
+}
+```
+
+约束：
+- 未授权手机号时 `phoneAuthorized=false`，`phone` 为空。
+- 无储值账户时余额按 0 兜底。
+- 第一期不接支付：`paymentEnabled=false`、`rechargeEnabled=false`。
+- `reservations` 返回桌台摘要，避免页面直接展示原始 `table_id`。
 
 ### getCustomers
 
@@ -1082,3 +1222,203 @@
 约束：
 - 必须记录解除人、解除时间、原因。
 - 写入 `audit_log`。
+
+## 9. Web 后台管理
+
+### getAdminDashboard
+
+Web 后台概览。
+
+权限：`manager` / `admin`。
+
+入参：
+
+```json
+{
+  "store_id": "store_001"
+}
+```
+
+出参：
+
+```json
+{
+  "overview": {},
+  "metrics": {
+    "reservation_count": 12,
+    "waiting_review_count": 2,
+    "customer_count": 30,
+    "campaign_registration_count": 8,
+    "no_show_active_count": 1,
+    "free_table_count": 10,
+    "free_assistant_count": 3
+  },
+  "recentReservations": [],
+  "recentAuditLogs": []
+}
+```
+
+### getAdminReservations
+
+Web 后台预约列表，返回桌台摘要。
+
+权限：`staff` 及以上。
+
+入参：
+
+```json
+{
+  "store_id": "store_001",
+  "status": "pending_verify"
+}
+```
+
+出参：
+
+```json
+{
+  "items": [
+    {
+      "_id": "reservation_001",
+      "table_id": "table_001",
+      "tableCode": "A01",
+      "tableType": "普台",
+      "table": {
+        "_id": "table_001",
+        "table_no": "A01",
+        "table_type_name": "普台"
+      }
+    }
+  ],
+  "total": 1
+}
+```
+
+### getPageConfig
+
+读取小程序页面配置。小程序端可读取 `published` 配置；无配置时返回默认首页配置。
+
+权限：公开读取。
+
+入参：
+
+```json
+{
+  "store_id": "store_001",
+  "page_key": "home",
+  "status": "published"
+}
+```
+
+出参：
+
+```json
+{
+  "config": {
+    "_id": "store_001_home_published",
+    "store_id": "store_001",
+    "page_key": "home",
+    "status": "published",
+    "theme": {},
+    "modules": []
+  }
+}
+```
+
+### managePageConfig
+
+保存或发布页面配置。
+
+权限：`manager` / `admin`。
+
+入参：
+
+```json
+{
+  "store_id": "store_001",
+  "page_key": "home",
+  "action": "publish",
+  "payload": {
+    "theme": {},
+    "modules": []
+  }
+}
+```
+
+出参：
+
+```json
+{
+  "config": {
+    "_id": "store_001_home_published",
+    "status": "published"
+  }
+}
+```
+
+约束：
+- `saveDraft` 写入 `draft`。
+- `publish` 写入 `published` 并记录 `published_at`。
+- 写入 `audit_log`。
+
+### getAssets / manageAssets
+
+素材库查询与管理。
+
+权限：`manager` / `admin`。
+
+查询入参：
+
+```json
+{
+  "store_id": "store_001",
+  "type": "hero",
+  "includeDeleted": false
+}
+```
+
+管理入参：
+
+```json
+{
+  "store_id": "store_001",
+  "asset_id": "asset_001",
+  "action": "upsert",
+  "payload": {
+    "name": "首页 Hero",
+    "type": "hero",
+    "url": "/assets/hero.jpg",
+    "file_id": "cloud://xxx"
+  }
+}
+```
+
+约束：
+- `delete` 为软删除，写入 `is_deleted=true`、`status=deleted`。
+- 默认查询不返回软删除素材；传 `includeDeleted=true` 可返回。
+- 写入 `audit_log`。
+
+### getAuditLogs
+
+审计日志查询。
+
+权限：`manager` / `admin`。
+
+入参：
+
+```json
+{
+  "store_id": "store_001",
+  "action": "managePageConfig:publish",
+  "target_type": "page_config"
+}
+```
+
+出参：
+
+```json
+{
+  "items": [],
+  "total": 0
+}
+```

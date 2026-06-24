@@ -19,8 +19,14 @@
     <view class="divider"></view>
     <view class="row">
       <view>手机号</view>
-      <view class="tag muted">{{profile.phone || "待授权"}}</view>
+      <view class="tag muted">{{phoneText}}</view>
     </view>
+    <view class="divider"></view>
+    <view class="form-row">
+      <input class="input" type="number" maxlength="11" value="{{profile.phone}}" placeholder="填写测试手机号" placeholder-style="color:#8ca39a;" bindinput="inputPhone" />
+      <button class="mini-button" open-type="getPhoneNumber" bindgetphonenumber="getPhoneNumber">授权手机号</button>
+    </view>
+    <view class="subtitle">{{phoneTip}}</view>
   </view>
 
   <view class="panel section">
@@ -42,5 +48,5 @@
     <view class="subtitle">限额活动可能进入待审核；门店确认后请按活动时间到店。</view>
   </view>
 
-  <view class="button secondary" bindtap="submit">{{submitting ? "提交中..." : "提交报名"}}</view>
+  <view class="button secondary" bindtap="submit">{{submitText}}</view>
 </view>

@@ -24,7 +24,7 @@
         </view>
         <view class="divider"></view>
         <view class="row">
-          <view class="subtitle">已报名 {{item.registeredCount}} / {{item.quota || "不限"}}</view>
+          <view class="subtitle">已报名 {{item.registeredCount}} / {{item.quota || '不限'}}</view>
           <view class="tag gold">剩余 {{item.leftCount}}</view>
         </view>
       </view>

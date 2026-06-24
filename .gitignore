@@ -3,6 +3,10 @@ miniprogram_npm/
 dist/
 .tmp_cloud_download/
 .tmp_cloud_download_root/
+.tmp_cloud_download*/
+.playwright-cli/
+output/
 .DS_Store
 .env
 *.log
+*.bak*

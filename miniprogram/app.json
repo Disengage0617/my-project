@@ -9,6 +9,8 @@
     "pages/campaign-list/index",
     "pages/campaign-detail/index",
     "pages/campaign-registration/index",
+    "pages/mine/index",
+    "pages/mine-feature/index",
     "pages/my-reservations/index",
     "pages/staff-workbench/index",
     "pages/arrival-review/index",
@@ -19,30 +21,46 @@
   ],
   "window": {
     "navigationBarTitleText": "台球预约",
-    "navigationBarBackgroundColor": "#0f5b4a",
+    "navigationBarBackgroundColor": "#070d0c",
     "navigationBarTextStyle": "white",
-    "backgroundColor": "#f6f7f4"
+    "backgroundColor": "#070d0c"
   },
   "tabBar": {
-    "color": "#66736d",
-    "selectedColor": "#0f5b4a",
-    "backgroundColor": "#ffffff",
+    "custom": true,
+    "color": "#8b8fa8",
+    "selectedColor": "#22f5ff",
+    "backgroundColor": "#050913",
+    "borderStyle": "black",
     "list": [
       {
         "pagePath": "pages/home/index",
-        "text": "首页"
+        "text": "首页",
+        "iconPath": "assets/tabbar/home.png",
+        "selectedIconPath": "assets/tabbar/home-active.png"
       },
       {
         "pagePath": "pages/reservation/index",
-        "text": "预约"
+        "text": "预约",
+        "iconPath": "assets/tabbar/reservation.png",
+        "selectedIconPath": "assets/tabbar/reservation-active.png"
       },
       {
         "pagePath": "pages/my-reservations/index",
-        "text": "我的"
+        "text": "订单",
+        "iconPath": "assets/tabbar/orders.png",
+        "selectedIconPath": "assets/tabbar/orders-active.png"
       },
       {
-        "pagePath": "pages/staff-workbench/index",
-        "text": "工作台"
+        "pagePath": "pages/assistant-list/index",
+        "text": "助教",
+        "iconPath": "assets/tabbar/coach.png",
+        "selectedIconPath": "assets/tabbar/coach-active.png"
+      },
+      {
+        "pagePath": "pages/mine/index",
+        "text": "我的",
+        "iconPath": "assets/tabbar/mine.png",
+        "selectedIconPath": "assets/tabbar/mine-active.png"
       }
     ]
   },

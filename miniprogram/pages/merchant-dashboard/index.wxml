@@ -35,6 +35,6 @@
 
   <view class="panel flat">
     <view class="title">下一步运营能力</view>
-    <view class="subtitle">还需要补齐商家配置接口、客户列表、报名名单和爽约限制管理，才能算完整后台闭环。</view>
+    <view class="subtitle">商家配置、客户列表、报名名单和爽约限制已进入接口联调，可继续在配置中心逐项检查。</view>
   </view>
 </view>

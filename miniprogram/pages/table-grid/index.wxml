@@ -17,9 +17,14 @@
       <view class="card">
         <view class="row">
           <view class="title">{{item.code}}</view>
-          <view class="tag">{{item.status}}</view>
+          <view class="tag">{{item.statusText}}</view>
         </view>
         <view class="subtitle">{{item.area}} · {{item.type}}</view>
+        <view class="divider"></view>
+        <view class="row">
+          <view class="subtitle">维护状态</view>
+          <view class="tag muted" data-id="{{item.id}}" data-status="{{item.status}}" bindtap="cycleStatus">{{actioningId === item.id ? '更新中' : '切换'}}</view>
+        </view>
       </view>
     </block>
   </view>

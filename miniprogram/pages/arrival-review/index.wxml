@@ -12,11 +12,11 @@
   <view class="panel section">
     <view class="row start">
       <view>
-        <view class="title">{{reservation.userName || "暂无待核实预约"}}</view>
+        <view class="title">{{reservation.userName || '暂无待核实预约'}}</view>
         <view wx:if="{{reservation}}" class="subtitle">{{reservation.tableCode}} · {{reservation.tableType}} · {{reservation.startTime}}-{{reservation.endTime}}</view>
-        <view wx:if="{{reservation}}" class="subtitle">助教：{{reservation.assistantText || "未选择"}}</view>
+        <view wx:if="{{reservation}}" class="subtitle">助教：{{reservation.assistantText || '未选择'}}</view>
       </view>
-      <view class="tag">{{reservation.status || "无"}}</view>
+      <view class="tag">{{reservation.status || '无'}}</view>
     </view>
     <view wx:if="{{actionStatus}}" class="divider"></view>
     <view wx:if="{{actionStatus}}" class="subtitle {{actionError ? 'status-danger' : ''}}">{{actionStatus}}</view>
@@ -28,9 +28,9 @@
   </view>
 
   <view wx:if="{{reservation}}" class="stack">
-    <view class="button" bindtap="confirmArrival">{{actioning === "confirmArrival" ? "确认中..." : "确认到店"}}</view>
-    <view class="button secondary" bindtap="openTable">{{actioning === "openTable" ? "开台中..." : "开台"}}</view>
-    <view class="button ghost" bindtap="closeTable">{{actioning === "closeTable" ? "关台中..." : "关台"}}</view>
-    <view class="button danger" bindtap="markNoShow">{{actioning === "markNoShow" ? "标记中..." : "标记未到"}}</view>
+    <view class="button" bindtap="confirmArrival">{{actioning === 'confirmArrival' ? '确认中...' : '确认到店'}}</view>
+    <view class="button secondary" bindtap="openTable">{{actioning === 'openTable' ? '开台中...' : '开台'}}</view>
+    <view class="button ghost" bindtap="closeTable">{{actioning === 'closeTable' ? '关台中...' : '关台'}}</view>
+    <view class="button danger" bindtap="markNoShow">{{actioning === 'markNoShow' ? '标记中...' : '标记未到'}}</view>
   </view>
 </view>

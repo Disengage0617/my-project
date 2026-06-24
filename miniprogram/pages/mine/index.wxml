@@ -1,0 +1,96 @@
+<view class="page mine-page">
+  <view class="brand-row">
+    <view class="brand-lockup">
+      <view class="brand-mark">W</view>
+      <view>
+        <view class="brand-name">W POOL</view>
+        <view class="brand-sub">台球俱乐部</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="member-hero section">
+    <image class="member-bg" src="/assets/generated/billiards-bg-option-5-coach.png" mode="aspectFill" />
+    <view class="member-mask"></view>
+    <view class="member-content">
+      <view class="profile-row">
+        <view class="avatar">
+          <image wx:if="{{profile.avatarUrl}}" class="avatar-img" src="{{profile.avatarUrl}}" mode="aspectFill" />
+          <image wx:else class="avatar-img" src="/assets/generated/assistant-thumb.jpg" mode="aspectFill" />
+        </view>
+        <view class="profile-main">
+          <view class="nickname">{{profile.nickName}}</view>
+          <view class="profile-id">ID: WP888888</view>
+          <view class="profile-desc">专注每一次击球，享受每一场对决。</view>
+        </view>
+        <view class="vip-badge">VIP 3</view>
+      </view>
+      <view class="member-grade">
+        <view>
+          <view class="grade-label">当前等级</view>
+          <view class="grade-title">{{profile.memberLevel}}</view>
+        </view>
+        <view class="growth-box">
+          <view class="grade-label">成长值</view>
+          <view class="growth-value">3250</view>
+        </view>
+      </view>
+      <view class="progress-track">
+        <view class="progress-fill"></view>
+      </view>
+    </view>
+  </view>
+
+  <view class="asset-panel section">
+    <block wx:for="{{quickStats}}" wx:key="key">
+      <view class="asset-item" data-url="{{item.url}}" bindtap="goMenu">
+        <view class="asset-icon {{item.tone === 'cyan' ? 'cyan-icon' : 'violet-icon'}}">{{item.icon}}</view>
+        <view class="asset-label">{{item.label}}</view>
+        <view class="asset-value">{{item.value}}</view>
+      </view>
+    </block>
+  </view>
+
+  <view wx:if="{{loading}}" class="panel section">
+    <view class="subtitle">正在加载我的信息...</view>
+  </view>
+  <view wx:if="{{errorMessage}}" class="panel section">
+    <view class="subtitle status-danger">{{errorMessage}}</view>
+  </view>
+
+  <view class="section">
+    <view class="section-heading cyber-heading">
+      <view class="title">选的预约</view>
+      <view class="tag muted" bindtap="goOrders">全部订单 ›</view>
+    </view>
+    <view class="reservation-card" bindtap="goOrders">
+      <image class="reservation-thumb" src="/assets/generated/home-cyber-hero-table.png" mode="aspectFill" />
+      <view class="reservation-info">
+        <view class="confirmed-tag">已确认</view>
+        <view class="reservation-title">A01 普台区</view>
+        <view class="reservation-time">6月21日（今天）16:00-18:00</view>
+        <view class="reservation-meta">4-6人 · 低杆</view>
+      </view>
+      <view class="verify-btn">到店验证</view>
+    </view>
+  </view>
+
+  <view class="feature-panel section">
+    <view class="section-heading cyber-heading">
+      <view class="title">常用功能</view>
+    </view>
+    <view class="feature-grid">
+      <block wx:for="{{featureItems}}" wx:key="title">
+        <view class="feature-item {{item.tone === 'cyan' ? 'feature-cyan' : 'feature-violet'}}" data-url="{{item.url}}" bindtap="goMenu">
+          <view class="feature-icon">{{item.icon}}</view>
+          <view class="feature-title">{{item.title}}</view>
+          <view class="feature-desc">{{item.desc}}</view>
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <button class="auth-button" open-type="getPhoneNumber" bindgetphonenumber="getPhoneNumber">
+    {{profile.phoneAuthorized ? '手机号已授权' : '授权手机号'}}
+  </button>
+</view>

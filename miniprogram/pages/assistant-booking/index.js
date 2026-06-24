@@ -1,4 +1,4 @@
-const api = require("../../services/api");
+const api = require("../../services/api.js");
 
 Page({
   data: {
@@ -12,20 +12,19 @@ Page({
 
   onLoad(options = {}) {
     this.setData({
-      assistantId: options.id || "",
+      assistantId: safeDecode(options.id || ""),
       startTime: getDefaultStartTimeText()
     });
     this.loadAssistant();
   },
 
   loadAssistant() {
-    api.call("getAssistants", { storeId: getApp().globalData.storeId }).then((res) => {
-      const list = (res.list || []).map(normalizeAssistant);
-      const assistant = list.find((item) => item.id === this.data.assistantId) || list[0] || null;
-      this.setData({
-        assistant,
-        assistantId: assistant ? assistant.id : this.data.assistantId
-      });
+    api.call("getAssistantDetail", {
+      storeId: getApp().globalData.storeId,
+      assistantId: this.data.assistantId
+    }).then((res) => {
+      const assistant = normalizeAssistant(res);
+      this.setData({ assistant, assistantId: assistant.id || this.data.assistantId });
     }).catch((error) => {
       this.setData({ errorMessage: error.message || "助教信息加载失败" });
     });
@@ -72,6 +71,14 @@ function getDefaultStartTimeText() {
   return `${pad(date.getHours())}:${pad(date.getMinutes())}`;
 }
 
+function safeDecode(value) {
+  try {
+    return decodeURIComponent(value);
+  } catch (error) {
+    return value;
+  }
+}
+
 function buildStartAt(timeText) {
   const [hour, minute] = (timeText || getDefaultStartTimeText()).split(":").map(Number);
   const date = new Date();
@@ -83,14 +90,20 @@ function buildStartAt(timeText) {
 }
 
 function normalizeAssistant(item) {
+  const photoUrl = item.photoUrl || item.photo_url || item.avatar_url || item.thumb_url || "/assets/generated/assistant-thumb.jpg";
+  const level = item.level || item.level_name || "";
+  const tagsText = item.tagsText || item.tags_text || (item.tags || []).join("、");
   return {
     ...item,
     id: item.id || item._id,
     name: item.name || item.assistant_name || "助教",
-    tagsText: item.tagsText || item.tags_text || (item.tags || []).join("、"),
+    level,
+    tagsText,
+    levelText: level ? `${level} · ${tagsText}` : tagsText,
     intro: item.intro || "到店后由员工确认服务安排。",
     price: item.price || (item.service_price_cent ? Math.round(item.service_price_cent / 100) : ""),
-    status: item.status || ""
+    status: item.status || "",
+    photoUrl
   };
 }
 

@@ -8,13 +8,13 @@
 
 ```yaml
 active_request_id: REQ-20260621-底部banner与助教交互协作修复
-status: active
+status: completed
 expected_lane: reviewer
 expected_thread_id: 019ee818-cf39-7242-826f-58e54cb89b17
 expected_agent: 验收官 Agent
 task_summary: 用户确认预约真实测试无问题；当前反馈底部 banner 消失、助教页面交互不可用；用户澄清 UI 设计师是固定会话 `UI设计师`，要求该会话和当前中枢加入子 agent 协作，视觉设计修改由 UI设计师主导
 started_at: 2026-06-21T11:35:00+08:00
-completed_at:
+completed_at: 2026-06-24T21:25:00+08:00
 final_result: 本地后端已补 customer_profile 缺集合兼容，测试 30/30 通过；真实页面要生效仍需部署 api 云函数并在真实云数据库创建空集合。
 resumed_at: 2026-06-21T00:37:52+08:00
 authorization: 用户已授权部署 api 云函数，并授权在真实云数据库创建 customer_profile 空集合。
@@ -51,6 +51,7 @@ coordinator_home_padding_hotfix: 用户截图反馈首页底部 `rule-strip` 仍
 coordinator_home_padding_verification: `HOME_BOTTOM_PADDING_OK` 通过；`git diff --check -- miniprogram/pages/home/index.wxss` 通过，仅 Git LF/CRLF 提示。
 user_final_validation: 用户于 2026-06-24 明确反馈“检核无问题，此版本保留上传git”，视为当前微信开发者工具真实业务页复验通过；底部遮挡与 SystemError timeout 未再阻塞操作。
 coordinator_next_step: 中枢解除 blocked_user，进入验收官 Agent 阶段收口；同时保留当前版本并上传 Git。
+review_final_result: 验收官 Agent 已新增 `docs/review/底部banner与助教交互阶段验收-20260624.md`，结论为可阶段收口，建议作为 Git 保留基线；未覆盖真机、体验版、多账号、多角色、真实手机号、真实云端写入、上传审核发布和线上回归。
 next_on_success: 验收官 Agent 对照用户反馈、前端报告和 QA 结果做阶段验收
 next_on_failure: 前端工程师 Agent 根据 QA 复现结果继续最小修复
 pause_conditions:

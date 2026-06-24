@@ -1923,3 +1923,23 @@ recorded_in: 当前对话 / docs/agent-dispatch-state.md / docs/worklog.md
 - 验证边界：真实页面复验结论来自用户手动检查；中枢仍会执行本地静态/单测检查作为版本基线补充。
 - 下一步负责 agent：验收官 Agent / Codex 中枢。
 - 是否触发暂停条件：否。
+
+## 2026-06-24 底部 banner 与助教交互阶段验收
+
+message_type: review
+request_id: REQ-20260621-底部banner与助教交互协作修复
+from_lane: reviewer
+to_lane: coordinator
+created_at: 2026-06-24T21:20:00+08:00
+recorded_in: 当前对话 / docs/agent-dispatch-state.md / docs/worklog.md / docs/review/底部banner与助教交互阶段验收-20260624.md / lanes/reviewer/worklog.md
+
+消息内容：
+- 验收结论：可以阶段收口，建议作为 Git 保留基线。
+- 完成内容：对照前端修复报告、QA 本地复测、中枢热修验证和用户最新真实检核反馈，完成底部 banner/rule-strip 遮挡、custom tabBar selected 同步、助教筛选交互、助教卡片跳转校验、预约页 require 黑屏热修、首页底部留白覆盖热修的阶段验收。
+- 真实业务页证据：用户明确反馈“检核无问题，此版本保留上传git”，作为当前微信开发者工具真实业务页复验通过证据。
+- 辅助证据：前端本地 JS/JSON/WXML/路径/绑定检查通过；QA 本地静态与 mock 复测通过；中枢热修验证 `node --check miniprogram/pages/reservation/index.js`、页面注册检查、`TABBAR_STYLE_CHECK_OK`、`HOME_BOTTOM_PADDING_OK` 均通过。
+- 证据限制：早先 QA 截图被遮挡，不作为真实页面通过证据；本地静态/mock/CLI 仅作为辅助证据。
+- 未实测范围：未 QA 自动化补充可采信业务页截图；未真机、体验版、多账号、多角色、真实手机号、真实云端写入、上传、提交审核、发布和线上回归。
+- 剩余问题：无阶段收口阻塞项；`SystemError timeout` 未定位根因，作为非阻塞风险后续观察。
+- 下一步负责 agent：Codex 中枢。
+- 是否触发暂停条件：否。若进入 Git 上传，需要中枢继续核对分支、文件范围和用户授权。
